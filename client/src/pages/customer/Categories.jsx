@@ -13,9 +13,14 @@ const Categories = () => {
   return (
     <>
       <SEO title="Categories" description="Browse murtis by category" />
-      <div className="container" style={{ padding: '60px 20px' }}>
-        <h1 className="section-title">Shop by Category</h1>
-        <p className="section-subtitle">Explore our divine collections</p>
+      <div className="page-hero">
+        <div className="container">
+          <span className="om-deco">🕉</span>
+          <h1>Shop by Category</h1>
+          <p>श्रेणी अनुसार दिव्य मूर्तियाँ खोजें</p>
+        </div>
+      </div>
+      <div className="container" style={{ padding: 'clamp(40px, 6vw, 64px) clamp(16px, 4vw, 24px)' }}>
         <div className="grid-3">
           {categories.map((cat) => (
             <Link key={cat._id} to={`/shop?category=${cat._id}`} style={{

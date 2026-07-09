@@ -71,10 +71,13 @@ const Shop = () => {
       <div className="shop-page">
         <div className="shop-header">
           <div className="container">
+            <span className="om-deco">🕉</span>
             <h1>Shop Divine Murtis</h1>
-            <p>{pagination.total || 0} products found</p>
+            <p>दिव्य मूर्तियों का संग्रह — {pagination.total || 0} sacred idols</p>
           </div>
         </div>
+
+        <div className={`filter-backdrop ${filtersOpen ? 'open' : ''}`} onClick={() => setFiltersOpen(false)} />
 
         <div className="container shop-layout">
           <aside className={`shop-filters ${filtersOpen ? 'open' : ''}`}>

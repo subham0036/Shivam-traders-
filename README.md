@@ -49,11 +49,13 @@ cd Shivam_traders
 ```bash
 cd server
 cp .env.example .env
-# Edit .env with your MongoDB, Cloudinary, Razorpay, and SMTP credentials
+# Edit .env — replace YOUR_DB_PASSWORD with MongoDB password (see SETUP.md)
 npm install
 npm run seed    # Seed database with sample products
-npm run dev     # Start server on port 5000
+npm run dev     # Start server on port 5002
 ```
+
+> **Mac users:** Port 5002 is used because macOS AirPlay occupies port 5000.
 
 ### 3. Frontend Setup
 

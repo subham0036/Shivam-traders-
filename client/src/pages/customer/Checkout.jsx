@@ -97,9 +97,15 @@ const Checkout = () => {
   return (
     <>
       <SEO title="Checkout" />
+      <div className="page-hero">
+        <div className="container">
+          <span className="om-deco">🕉</span>
+          <h1>Checkout</h1>
+          <p>अपने घर मंदिर के लिए ऑर्डर पूर्ण करें</p>
+        </div>
+      </div>
       <div className="checkout-page">
         <div className="container">
-          <h1>Checkout</h1>
           <form onSubmit={handleSubmit} className="checkout-layout">
             <div className="checkout-form">
               {!user && (

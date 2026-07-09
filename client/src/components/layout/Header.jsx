@@ -41,11 +41,9 @@ const Header = () => {
   return (
     <header className={`header ${scrolled ? 'header-scrolled' : ''}`}>
       <div className="header-top">
-        <div className="container">
-          <p>🙏 Free Shipping on orders above ₹2,000 | 100% Authentic Murtis</p>
-        </div>
+        <p>🙏 Free Shipping above ₹2,000 &nbsp;|&nbsp; 100% Authentic Handcrafted Murtis &nbsp;|&nbsp; COD Available</p>
       </div>
-      <div className="container header-main">
+      <div className="header-main">
         <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           {menuOpen ? <FiX /> : <FiMenu />}
         </button>
@@ -54,9 +52,11 @@ const Header = () => {
           <span className="logo-icon">🕉</span>
           <div>
             <span className="logo-name">Shivam Traders</span>
-            <span className="logo-tagline">Divine Murtis</span>
+            <span className="logo-tagline">दिव्य मूर्तियाँ</span>
           </div>
         </Link>
+
+        <div className={`nav-backdrop ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(false)} />
 
         <nav className={`nav ${menuOpen ? 'nav-open' : ''}`}>
           {navLinks.map((link) => (

@@ -59,8 +59,8 @@ const Home = () => {
     { q: 'Can I request a live video?', a: 'Absolutely! Contact us on WhatsApp to request a live video of any product.' },
   ];
 
-  const ProductSection = ({ title, subtitle, products, link }) => (
-    <section className="section">
+  const ProductSection = ({ title, subtitle, products, link, alt }) => (
+    <section className={`section ${alt ? 'section-alt' : ''}`}>
       <div className="container">
         <h2 className="section-title">{title}</h2>
         <p className="section-subtitle">{subtitle}</p>
@@ -86,15 +86,17 @@ const Home = () => {
 
       {/* Hero */}
       <section className="hero">
-        <div className="hero-bg" style={{ backgroundImage: `url(${heroBanner?.image?.url || 'https://picsum.photos/seed/hero/1600/700'})` }} />
+        <div className="hero-bg" style={{ backgroundImage: `url(${heroBanner?.image?.url || 'https://images.unsplash.com/photo-1605647540924-852290f6b0d5?w=1600&q=80'})` }} />
         <div className="hero-overlay" />
         <div className="container hero-content">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <span className="hero-badge">✨ Premium Collection</span>
-            <h1>{heroBanner?.title || 'Divine Murtis for Your Sacred Space'}</h1>
-            <p>{heroBanner?.subtitle || 'Handcrafted Hindu God idols in Brass, Marble & Wood. Delivered across India.'}</p>
+            <span className="hero-om">🕉</span>
+            <span className="hero-badge">✨ Premium Murti Collection</span>
+            <p className="hero-tagline">दिव्य मूर्तियाँ — Divine Idols for Your Home Temple</p>
+            <h1>{heroBanner?.title || 'Sacred Murtis Crafted with Devotion'}</h1>
+            <p>{heroBanner?.subtitle || 'Handcrafted Hindu God idols in Brass, Marble & Wood. Blessed, packaged with care, delivered across India.'}</p>
             <div className="hero-cta">
-              <Link to="/shop" className="btn btn-primary btn-lg">Shop Now</Link>
+              <Link to="/shop" className="btn btn-primary btn-lg">Shop Murtis</Link>
               <Link to="/about" className="btn btn-outline btn-lg">Our Story</Link>
             </div>
           </motion.div>
@@ -135,11 +137,11 @@ const Home = () => {
         </div>
       </section>
 
-      <ProductSection title="Featured Collection" subtitle="Curated divine masterpieces" products={featured} link="/shop?featured=true" />
-      <ProductSection title="Best Sellers" subtitle="Most loved by devotees" products={bestSellers} link="/shop?bestSeller=true" />
-      <ProductSection title="Trending Now" subtitle="Popular picks this season" products={trending} link="/shop?trending=true" />
-      <ProductSection title="New Arrivals" subtitle="Fresh additions to our collection" products={newArrivals} link="/shop?newArrival=true" />
-      <ProductSection title="Premium Collection" subtitle="Luxury murtis for discerning devotees" products={premium} link="/shop?premium=true" />
+      <ProductSection title="Featured Collection" subtitle="श्रेष्ठ संग्रह — Curated divine masterpieces" products={featured} link="/shop?featured=true" alt />
+      <ProductSection title="Best Sellers" subtitle="भक्तों की पसंद — Most loved by devotees" products={bestSellers} link="/shop?bestSeller=true" />
+      <ProductSection title="Trending Now" subtitle="इस सीज़न के लोकप्रिय — Popular picks" products={trending} link="/shop?trending=true" alt />
+      <ProductSection title="New Arrivals" subtitle="नया आगमन — Fresh additions to our collection" products={newArrivals} link="/shop?newArrival=true" />
+      <ProductSection title="Premium Collection" subtitle="विशेष संग्रह — Luxury murtis for discerning devotees" products={premium} link="/shop?premium=true" alt />
 
       {/* Shop by Material */}
       <section className="section materials-section">

@@ -1,7 +1,7 @@
 .floating-buttons {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: clamp(16px, 4vw, 28px);
+  right: clamp(16px, 4vw, 28px);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -9,31 +9,50 @@
 }
 
 .float-btn {
-  width: 52px;
-  height: 52px;
+  width: clamp(48px, 10vw, 56px);
+  height: clamp(48px, 10vw, 56px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: clamp(20px, 4vw, 24px);
   color: white;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 4px 20px rgba(123, 45, 38, 0.25);
   transition: var(--transition);
-  animation: pulse 2s infinite;
+  border: 2px solid rgba(255,255,255,0.3);
 }
 
 .float-btn:hover { transform: scale(1.1); }
 
-.float-btn.whatsapp { background: #25D366; }
-.float-btn.call { background: var(--saffron); animation: none; }
-.float-btn.top { background: var(--text); animation: none; }
-
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(37, 211, 102, 0); }
+.float-btn.whatsapp {
+  background: linear-gradient(135deg, #25D366, #1DA851);
+  animation: waPulse 2.5s infinite;
 }
 
-@media (max-width: 480px) {
-  .floating-buttons { bottom: 16px; right: 16px; }
-  .float-btn { width: 46px; height: 46px; font-size: 20px; }
+.float-btn.call {
+  background: linear-gradient(135deg, var(--saffron), var(--saffron-dark));
+}
+
+.float-btn.top {
+  background: linear-gradient(135deg, var(--maroon-dark), var(--maroon));
+  animation: none;
+}
+
+@keyframes waPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35); }
+  50% { box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35), 0 0 0 10px rgba(37, 211, 102, 0.15); }
+}
+
+@media (max-width: 768px) {
+  .floating-buttons {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    right: 14px;
+  }
+}
+
+/* Avoid overlap with sticky add-to-cart on product page */
+@media (max-width: 768px) {
+  body:has(.sticky-add-cart) .floating-buttons {
+    bottom: 72px;
+  }
 }

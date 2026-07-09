@@ -18,9 +18,14 @@ const Contact = () => {
   return (
     <>
       <SEO title="Contact Us" />
-      <div className="container" style={{ padding: '60px 20px' }}>
-        <h1 className="section-title">Contact Us</h1>
-        <p className="section-subtitle">We'd love to hear from you</p>
+      <div className="page-hero">
+        <div className="container">
+          <span className="om-deco">🕉</span>
+          <h1>Contact Us</h1>
+          <p>हमसे संपर्क करें — We'd love to hear from you</p>
+        </div>
+      </div>
+      <div className="container" style={{ padding: 'clamp(40px, 6vw, 64px) clamp(16px, 4vw, 24px)' }}>
         <div className="grid-2" style={{ gap: 48, alignItems: 'start' }}>
           <form onSubmit={handleSubmit} style={{ background: 'white', padding: 32, borderRadius: 16, boxShadow: 'var(--shadow)' }}>
             <div className="form-group"><label>Name</label><input className="form-control" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>

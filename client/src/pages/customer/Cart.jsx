@@ -37,9 +37,15 @@ const Cart = () => {
   return (
     <>
       <SEO title="Shopping Cart" />
+      <div className="page-hero">
+        <div className="container">
+          <span className="om-deco">🕉</span>
+          <h1>Shopping Cart</h1>
+          <p>आपकी चुनी हुई दिव्य मूर्तियाँ</p>
+        </div>
+      </div>
       <div className="cart-page">
         <div className="container">
-          <h1>Shopping Cart</h1>
 
           {cart.items?.length === 0 ? (
             <div className="empty-cart">

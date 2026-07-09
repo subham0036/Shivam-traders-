@@ -2,10 +2,16 @@ import SEO from '../../components/common/SEO';
 import { Link } from 'react-router-dom';
 
 const About = () => (
-  <>
-    <SEO title="About Us" description="Learn about Shivam Traders - premium Hindu God Murtis from Varanasi" />
-    <div className="container" style={{ padding: '60px 20px', maxWidth: 900 }}>
-      <h1 style={{ fontSize: 42, marginBottom: 24, textAlign: 'center' }}>About Shivam Traders</h1>
+    <>
+      <SEO title="About Us" description="Learn about Shivam Traders - premium Hindu God Murtis from Varanasi" />
+      <div className="page-hero">
+        <div className="container">
+          <span className="om-deco">🕉</span>
+          <h1>About Shivam Traders</h1>
+          <p>पीढ़ियों से दिव्य मूर्तियाँ — Crafting devotion since generations</p>
+        </div>
+      </div>
+      <div className="container" style={{ padding: 'clamp(40px, 6vw, 64px) clamp(16px, 4vw, 24px)', maxWidth: 900 }}>
       <img src="https://picsum.photos/seed/about2/900/400" alt="Shivam Traders" style={{ borderRadius: 16, marginBottom: 32, width: '100%' }} />
       <p style={{ fontSize: 17, lineHeight: 1.8, marginBottom: 20, color: 'var(--text-light)' }}>
         Shivam Traders is a family-owned business rooted in the sacred traditions of Varanasi. For over three generations, we have been crafting and curating the finest Hindu God Murtis for devotees across India.

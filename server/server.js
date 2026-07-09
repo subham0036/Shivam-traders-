@@ -54,7 +54,17 @@ app.use('/api', adminRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5002;
+const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n❌ Port ${PORT} is already in use.`);
+    console.error('   On macOS, port 5000 is often used by AirPlay Receiver.');
+    console.error('   Fix: set PORT=5002 in server/.env and restart.\n');
+    process.exit(1);
+  }
+  throw err;
+});
 
 export default app;
