@@ -40,8 +40,8 @@ Premium MERN Stack eCommerce website for Hindu God Murtis (Idols).
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/shivamtraders1138-oss/Shivam_traders.git
-cd Shivam_traders
+git clone https://github.com/subham0036/Shivam-traders-.git
+cd Shivam-traders-
 ```
 
 ### 2. Backend Setup

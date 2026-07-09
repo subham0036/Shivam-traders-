@@ -5,8 +5,8 @@ Follow these steps after cloning the repo.
 ## 1. Clone the repository
 
 ```bash
-git clone https://github.com/shivamtraders1138-oss/Shivam-traders.git
-cd Shivam-traders
+git clone https://github.com/subham0036/Shivam-traders-.git
+cd Shivam-traders-
 ```
 
 ## 2. Backend setup

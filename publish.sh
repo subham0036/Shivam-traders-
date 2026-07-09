@@ -33,5 +33,5 @@ fi
 # Step 3: Push if repo already existed
 git push -u origin main
 echo ""
-echo "✅ Published: https://github.com/subham0036/Shivam-traders"
+echo "✅ Published: https://github.com/subham0036/Shivam-traders-"
 echo "Send this link to your friend!"
