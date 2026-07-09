@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment variables - NEVER commit these
+.env
+.env.*
+!.env.example
+client/.env
+client/.env.*
+!client/.env.example
+server/.env
+server/.env.*
+!server/.env.example
+
+# Secrets & credentials
+*.pem
+*.key
+credentials.json
+serviceAccountKey.json
+firebase-adminsdk*.json
+
+# Uploads (local only)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Build outputs
+client/dist/
+client/build/
+server/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+
+# Misc
+*.local
+.cache/
