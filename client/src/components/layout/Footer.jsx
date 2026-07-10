@@ -4,6 +4,7 @@ import { FaWhatsapp } from 'react-icons/fa';
 import { adminAPI } from '../../services';
 import { useState } from 'react';
 import { showToast } from '../common/Toast';
+import { STORE } from '../../utils/storeInfo';
 import './Footer.css';
 
 const Footer = () => {
@@ -13,7 +14,7 @@ const Footer = () => {
     e.preventDefault();
     try {
       await adminAPI.subscribeNewsletter({ email });
-      showToast('Subscribed successfully!');
+      showToast('Subscribed successfully');
       setEmail('');
     } catch {
       showToast('Subscription failed');
@@ -23,57 +24,84 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-main">
-        <div className="container grid-4">
+        <div className="container footer-grid">
           <div className="footer-brand">
-            <h3>🕉 Shivam Traders</h3>
-            <p>Premium handcrafted Hindu God Murtis. Bringing divine blessings to homes across India since generations.</p>
+            <Link to="/" className="footer-logo">Shivam Traders</Link>
+            <p>
+              Premium handcrafted Hindu God murtis from Jogbani, Araria (Bihar). Delivering devotion and craftsmanship across India.
+            </p>
             <div className="footer-social">
               <a href="#" aria-label="Instagram"><FiInstagram /></a>
               <a href="#" aria-label="Facebook"><FiFacebook /></a>
               <a href="#" aria-label="YouTube"><FiYoutube /></a>
-              <a href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210'}`} aria-label="WhatsApp"><FaWhatsapp /></a>
+              <a href={`https://wa.me/${STORE.whatsapp}`} aria-label="WhatsApp" target="_blank" rel="noopener noreferrer"><FaWhatsapp /></a>
             </div>
           </div>
 
-          <div>
-            <h4>Quick Links</h4>
+          <div className="footer-col">
+            <h4>Shop</h4>
             <ul>
-              <li><Link to="/shop">Shop All</Link></li>
+              <li><Link to="/shop">All Murtis</Link></li>
               <li><Link to="/shop?premium=true">Premium Collection</Link></li>
               <li><Link to="/shop?newArrival=true">New Arrivals</Link></li>
               <li><Link to="/shop?bestSeller=true">Best Sellers</Link></li>
-              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/about">Our Story</Link></li>
             </ul>
           </div>
 
-          <div>
-            <h4>Customer Service</h4>
+          <div className="footer-col">
+            <h4>Policies</h4>
             <ul>
               <li><Link to="/track-order">Track Order</Link></li>
-              <li><Link to="/shipping-policy">Shipping Policy</Link></li>
-              <li><Link to="/refund-policy">Refund Policy</Link></li>
-              <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+              <li><Link to="/shipping-policy">Shipping</Link></li>
+              <li><Link to="/refund-policy">Returns & Exchange</Link></li>
+              <li><Link to="/privacy-policy">Privacy</Link></li>
               <li><Link to="/terms">Terms & Conditions</Link></li>
             </ul>
           </div>
 
-          <div>
-            <h4>Contact Us</h4>
+          <div className="footer-col">
+            <h4>Contact</h4>
             <ul className="footer-contact">
-              <li><FiMapPin /> Varanasi, Uttar Pradesh, India</li>
-              <li><FiPhone /> {import.meta.env.VITE_PHONE_NUMBER || '+91 9876543210'}</li>
-              <li><FiMail /> info@shivamtraders.com</li>
+              <li>
+                <FiMapPin />
+                <span>
+                  {STORE.address.line1}<br />
+                  {STORE.address.line2}<br />
+                  {STORE.address.line3} — {STORE.address.pincode}
+                  {STORE.mapsLink && (
+                    <>
+                      <br />
+                      <a href={STORE.mapsLink} target="_blank" rel="noopener noreferrer" className="footer-map-link">
+                        View on Google Maps
+                      </a>
+                    </>
+                  )}
+                </span>
+              </li>
+              <li>
+                <FiPhone />
+                <a href={`tel:${STORE.phoneTel}`}>{STORE.phone}</a>
+              </li>
+              <li>
+                <FiMail />
+                <a href={`mailto:${STORE.email}`}>{STORE.email}</a>
+              </li>
             </ul>
-            <form className="newsletter-form" onSubmit={handleNewsletter}>
-              <input type="email" placeholder="Your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              <button type="submit" className="btn btn-primary btn-sm">Subscribe</button>
+            <form className="footer-newsletter" onSubmit={handleNewsletter}>
+              <p className="footer-newsletter-label">Newsletter</p>
+              <div className="footer-newsletter-row">
+                <input type="email" placeholder="Your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <button type="submit" className="btn btn-primary btn-sm">Subscribe</button>
+              </div>
             </form>
           </div>
         </div>
       </div>
       <div className="footer-bottom">
-        <div className="container">
-          <p>© {new Date().getFullYear()} Shivam Traders. All rights reserved. Made with 🙏 in India</p>
+        <div className="container footer-bottom-inner">
+          <p>© {new Date().getFullYear()} Shivam Traders. All rights reserved.</p>
+          <span>Jogbani, Araria (Bihar) — Made in India</span>
         </div>
       </div>
     </footer>

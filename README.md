@@ -87,13 +87,16 @@ npm run dev     # Start on port 5173
 | VITE_API_URL | Backend API URL |
 | VITE_RAZORPAY_KEY_ID | Razorpay public key |
 | VITE_WHATSAPP_NUMBER | WhatsApp contact number |
+| VITE_PHONE_NUMBER | Store phone number |
+| VITE_EMAIL | Store email |
+| VITE_MAPS_LINK | Google Maps link to your shop |
+| VITE_MAPS_EMBED | Google Maps embed URL for contact page |
 
-## Default Admin Credentials (after seeding)
+## Admin account
 
-- **Email:** your_admin@example.com
-- **Password:** ***REMOVED***
+After `npm run seed`, log in with the **ADMIN_EMAIL** and **ADMIN_PASSWORD** you set in `server/.env`.
 
-> Change these immediately after first login in production!
+Never commit real credentials to GitHub. Use strong passwords and change them after first login in production.
 
 ## Deployment
 

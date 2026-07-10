@@ -4,6 +4,7 @@ import { FaWhatsapp } from 'react-icons/fa';
 import SEO from '../../components/common/SEO';
 import { adminAPI } from '../../services';
 import { showToast } from '../../components/common/Toast';
+import { STORE } from '../../utils/storeInfo';
 
 const Contact = () => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
@@ -17,7 +18,7 @@ const Contact = () => {
 
   return (
     <>
-      <SEO title="Contact Us" />
+      <SEO title="Contact Us" description={`Contact ${STORE.name} — ${STORE.address.full}`} />
       <div className="page-hero">
         <div className="container">
           <span className="om-deco">🕉</span>
@@ -25,9 +26,10 @@ const Contact = () => {
           <p>हमसे संपर्क करें — We'd love to hear from you</p>
         </div>
       </div>
-      <div className="container" style={{ padding: 'clamp(40px, 6vw, 64px) clamp(16px, 4vw, 24px)' }}>
-        <div className="grid-2" style={{ gap: 48, alignItems: 'start' }}>
-          <form onSubmit={handleSubmit} style={{ background: 'white', padding: 32, borderRadius: 16, boxShadow: 'var(--shadow)' }}>
+      <section className="content-section">
+        <div className="container contact-grid">
+          <form onSubmit={handleSubmit} className="content-card">
+            <h3>Send us a message</h3>
             <div className="form-group"><label>Name</label><input className="form-control" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
             <div className="grid-2">
               <div className="form-group"><label>Email</label><input className="form-control" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required /></div>
@@ -39,31 +41,61 @@ const Contact = () => {
           </form>
 
           <div>
-            <div style={{ background: 'white', padding: 32, borderRadius: 16, boxShadow: 'var(--shadow)', marginBottom: 24 }}>
-              {[
-                { icon: <FiMapPin />, text: 'Varanasi, Uttar Pradesh, India' },
-                { icon: <FiPhone />, text: import.meta.env.VITE_PHONE_NUMBER || '+91 9876543210' },
-                { icon: <FiMail />, text: 'info@shivamtraders.com' },
-                { icon: <FaWhatsapp />, text: 'WhatsApp Support Available' },
-                { icon: <FiClock />, text: 'Mon-Sat: 9AM - 8PM' },
-              ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, fontSize: 15 }}>
-                  <span style={{ color: 'var(--saffron)', fontSize: 20 }}>{item.icon}</span>
-                  {item.text}
+            <div className="content-card contact-details-card">
+              <h3>Visit our store</h3>
+              <div className="contact-info-item">
+                <FiMapPin />
+                <div>
+                  <strong>{STORE.name}</strong>
+                  <p>{STORE.address.line2}</p>
+                  <p>{STORE.address.line3}</p>
+                  <p>PIN — {STORE.address.pincode}</p>
+                  {STORE.mapsLink && (
+                    <a
+                      href={STORE.mapsLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="contact-map-link"
+                    >
+                      Get directions on Google Maps →
+                    </a>
+                  )}
                 </div>
-              ))}
+              </div>
+              <a href={`tel:${STORE.phoneTel}`} className="contact-info-item contact-link">
+                <FiPhone />
+                <span>{STORE.phone}</span>
+              </a>
+              <a href={`mailto:${STORE.email}`} className="contact-info-item contact-link">
+                <FiMail />
+                <span>{STORE.email}</span>
+              </a>
+              <a
+                href={`https://wa.me/${STORE.whatsapp}?text=Hi, I have a query about your murtis`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-info-item contact-link"
+              >
+                <FaWhatsapp />
+                <span>WhatsApp: {STORE.phone}</span>
+              </a>
+              <div className="contact-info-item">
+                <FiClock />
+                <span>{STORE.hours}</span>
+              </div>
             </div>
-            <iframe
-              title="Shivam Traders Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3600!2d82.9739!3d25.3176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDE5JzAzLjQiTiA4MsKwNTgnMjYuMCJF!5e0!3m2!1sen!2sin!4v1"
-              width="100%"
-              height="300"
-              style={{ border: 0, borderRadius: 16 }}
-              loading="lazy"
-            />
+            {STORE.mapsEmbed && (
+              <iframe
+                title="Shivam Traders — Jogbani, Araria"
+                src={STORE.mapsEmbed}
+                className="contact-map"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            )}
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };

@@ -11,8 +11,26 @@ dotenv.config({ path: '.env' });
 
 const gods = ['Ganesha', 'Krishna', 'Shiva', 'Lakshmi', 'Hanuman', 'Durga', 'Saraswati', 'Ram', 'Vishnu'];
 const materials = ['brass', 'marble', 'wood', 'clay', 'resin', 'copper'];
+const MURTI_SEED_IMAGES = [
+  'https://images.unsplash.com/photo-1560420713-b279b33e9abf?w=600&q=85',
+  'https://images.unsplash.com/photo-1756860750470-f6b1267fcf9c?w=600&q=85',
+  'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=85',
+  'https://images.unsplash.com/photo-1567786778567-78673942-be055fed5d30?w=600&q=85',
+];
 
 const seed = async () => {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!process.env.MONGODB_URI) {
+    console.error('Missing MONGODB_URI in server/.env');
+    process.exit(1);
+  }
+  if (!adminEmail || !adminPassword) {
+    console.error('Set ADMIN_EMAIL and ADMIN_PASSWORD in server/.env before running seed.');
+    process.exit(1);
+  }
+
   await mongoose.connect(process.env.MONGODB_URI);
   console.log('Connected for seeding...');
 
@@ -23,10 +41,10 @@ const seed = async () => {
 
   const admin = await User.create({
     name: 'Admin',
-    email: process.env.ADMIN_EMAIL || 'your_admin@example.com',
-    password: process.env.ADMIN_PASSWORD || '***REMOVED***',
+    email: adminEmail,
+    password: adminPassword,
     role: 'admin',
-    phone: '+919876543210',
+    phone: process.env.STORE_PHONE || '',
   });
   console.log('Admin created:', admin.email);
 
@@ -63,7 +81,7 @@ const seed = async () => {
       sellingPrice,
       discount,
       stock: 10 + (i % 8),
-      images: [{ url: `https://picsum.photos/seed/st${i}/600/800`, alt: name }],
+      images: [{ url: MURTI_SEED_IMAGES[i % MURTI_SEED_IMAGES.length], alt: name }],
       isFeatured: i < 6,
       isTrending: i % 3 === 0,
       isBestSeller: i % 4 === 0,
@@ -89,9 +107,14 @@ const seed = async () => {
   })));
 
   await Settings.create({
+    contact: {
+      phone: process.env.STORE_PHONE || '',
+      whatsapp: process.env.STORE_WHATSAPP || '',
+      email: process.env.STORE_EMAIL || '',
+    },
     banners: [
-      { title: 'Divine Collection 2026', subtitle: 'Premium Handcrafted Murtis', type: 'hero', isActive: true, image: { url: 'https://picsum.photos/seed/hero/1600/700' } },
-      { title: 'Diwali Special', subtitle: 'Up to 20% Off on Ganesha & Lakshmi', type: 'festival', isActive: true, image: { url: 'https://picsum.photos/seed/festival/1200/400' } },
+      { title: 'Divine Collection 2026', subtitle: 'Premium Handcrafted Murtis', type: 'hero', isActive: true, image: { url: 'https://images.unsplash.com/photo-1560420713-b279b33e9abf?w=1600&q=85' } },
+      { title: 'Diwali Special', subtitle: 'Up to 20% Off on Ganesha & Lakshmi', type: 'festival', isActive: true, image: { url: 'https://images.unsplash.com/photo-1756860750470-f6b1267fcf9c?w=1200&q=85' } },
     ],
     flashSale: { isActive: true, endTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), discount: 15 },
     exitIntentCoupon: { code: 'WELCOME10', discount: 10, isActive: true },

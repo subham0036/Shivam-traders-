@@ -7,10 +7,10 @@ const settingsSchema = new mongoose.Schema(
     logo: { url: String, publicId: String },
     favicon: { url: String, publicId: String },
     contact: {
-      phone: { type: String, default: '+91 9876543210' },
-      whatsapp: { type: String, default: '+919876543210' },
-      email: { type: String, default: 'info@shivamtraders.com' },
-      address: { type: String, default: 'Varanasi, Uttar Pradesh, India' },
+      phone: { type: String, default: '' },
+      whatsapp: { type: String, default: '' },
+      email: { type: String, default: '' },
+      address: { type: String, default: 'Shivam Traders, Jogbani, Ashok Cinema Road, Ward No. 5, Gupta Market, Araria (Bihar) — 854328' },
       businessHours: { type: String, default: 'Mon-Sat: 9AM - 8PM' },
     },
     social: {
