@@ -48,7 +48,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
 app.use(xss());
-app.use(apiLimiter);
+if (process.env.NODE_ENV !== 'development') {
+  app.use(apiLimiter);
+}
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

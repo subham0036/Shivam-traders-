@@ -2,7 +2,7 @@ import slugify from 'slugify';
 import Product from '../models/Product.js';
 import Inventory from '../models/Inventory.js';
 import { paginate } from '../utils/helpers.js';
-import { uploadMultiple, deleteFromCloudinary, uploadToCloudinary } from '../services/cloudinaryService.js';
+import { uploadImages, uploadSingleMedia, deleteMedia } from '../utils/uploadHelper.js';
 
 const buildProductFilter = (query) => {
   const filter = { isActive: true };
@@ -77,18 +77,26 @@ export const getProduct = async (req, res) => {
   res.json({ success: true, data: { ...product.toObject(), suggestedRelated: related } });
 };
 
+const parseFormData = (body) => {
+  try {
+    return JSON.parse(body?.data || '{}');
+  } catch {
+    throw new Error('Invalid product data. Please refresh and try again.');
+  }
+};
+
 // @desc    Create product (admin)
 // @route   POST /api/products
 export const createProduct = async (req, res) => {
-  const data = JSON.parse(req.body.data || '{}');
+  const data = parseFormData(req.body);
   data.slug = slugify(data.name, { lower: true, strict: true });
   data.sku = data.sku || `SKU-${Date.now()}`;
 
   if (req.files?.images) {
-    data.images = await uploadMultiple(req.files.images, 'products');
+    data.images = await uploadImages(req.files.images, 'products');
   }
   if (req.files?.video?.[0]) {
-    data.video = await uploadToCloudinary(req.files.video[0].buffer, 'products/videos');
+    data.video = await uploadSingleMedia(req.files.video[0], 'products/videos');
   }
 
   const product = await Product.create(data);
@@ -103,16 +111,17 @@ export const updateProduct = async (req, res) => {
   let product = await Product.findById(req.params.id);
   if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
 
-  const data = JSON.parse(req.body.data || '{}');
+  const data = parseFormData(req.body);
   if (data.name) data.slug = slugify(data.name, { lower: true, strict: true });
 
   if (req.files?.images) {
-    const newImages = await uploadMultiple(req.files.images, 'products');
-    data.images = [...(product.images || []), ...newImages];
+    const newImages = await uploadImages(req.files.images, 'products');
+    const base = data.images || product.images || [];
+    data.images = [...base, ...newImages];
   }
   if (req.files?.video?.[0]) {
-    if (product.video?.publicId) await deleteFromCloudinary(product.video.publicId);
-    data.video = await uploadToCloudinary(req.files.video[0].buffer, 'products/videos');
+    if (product.video?.publicId) await deleteMedia(product.video.publicId);
+    data.video = await uploadSingleMedia(req.files.video[0], 'products/videos');
   }
 
   product = await Product.findByIdAndUpdate(req.params.id, data, { new: true, runValidators: true });
@@ -133,9 +142,9 @@ export const deleteProduct = async (req, res) => {
   if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
 
   for (const img of product.images || []) {
-    await deleteFromCloudinary(img.publicId);
+    await deleteMedia(img.publicId);
   }
-  if (product.video?.publicId) await deleteFromCloudinary(product.video.publicId);
+  if (product.video?.publicId) await deleteMedia(product.video.publicId);
 
   await Product.findByIdAndDelete(req.params.id);
   await Inventory.findOneAndDelete({ product: req.params.id });
@@ -185,6 +194,6 @@ export const checkDelivery = async (req, res) => {
 
   res.json({
     success: true,
-    data: { available: true, estimatedDays: days, estimatedDelivery: deliveryDate, codAvailable: true },
+    data: { available: true, estimatedDays: days, estimatedDelivery: deliveryDate, codAvailable: false },
   });
 };

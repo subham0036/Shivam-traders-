@@ -14,7 +14,7 @@ const MainLayout = () => (
           <span>✦ Handcrafted</span>
           <span>🪷 Blessed Packaging</span>
           <span>🚚 Pan India Delivery</span>
-          <span>💰 COD Available</span>
+          <span>📱 UPI Payment</span>
           <span>🔒 Secure Payment</span>
         </div>
       </div>

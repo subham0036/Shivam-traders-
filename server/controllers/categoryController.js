@@ -1,6 +1,6 @@
 import slugify from 'slugify';
 import Category from '../models/Category.js';
-import { uploadToCloudinary, deleteFromCloudinary } from '../services/cloudinaryService.js';
+import { uploadSingleMedia, deleteMedia } from '../utils/uploadHelper.js';
 
 // @desc    Get all categories
 // @route   GET /api/categories
@@ -24,7 +24,7 @@ export const getCategory = async (req, res) => {
 export const createCategory = async (req, res) => {
   const data = { ...req.body, slug: slugify(req.body.name, { lower: true, strict: true }) };
   if (req.file) {
-    data.image = await uploadToCloudinary(req.file.buffer, 'categories');
+    data.image = await uploadSingleMedia(req.file, 'categories');
   }
   const category = await Category.create(data);
   res.status(201).json({ success: true, data: category });
@@ -39,8 +39,8 @@ export const updateCategory = async (req, res) => {
   const data = { ...req.body };
   if (data.name) data.slug = slugify(data.name, { lower: true, strict: true });
   if (req.file) {
-    if (category.image?.publicId) await deleteFromCloudinary(category.image.publicId);
-    data.image = await uploadToCloudinary(req.file.buffer, 'categories');
+    if (category.image?.publicId) await deleteMedia(category.image.publicId);
+    data.image = await uploadSingleMedia(req.file, 'categories');
   }
 
   const updated = await Category.findByIdAndUpdate(req.params.id, data, { new: true });
@@ -52,7 +52,7 @@ export const updateCategory = async (req, res) => {
 export const deleteCategory = async (req, res) => {
   const category = await Category.findById(req.params.id);
   if (!category) return res.status(404).json({ success: false, message: 'Category not found' });
-  if (category.image?.publicId) await deleteFromCloudinary(category.image.publicId);
+  if (category.image?.publicId) await deleteMedia(category.image.publicId);
   await Category.findByIdAndDelete(req.params.id);
   res.json({ success: true, message: 'Category deleted' });
 };

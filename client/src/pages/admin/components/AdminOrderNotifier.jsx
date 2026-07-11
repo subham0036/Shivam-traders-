@@ -5,7 +5,7 @@ import { orderAPI } from '../../../services';
 import { formatPrice } from '../../../utils/helpers';
 import './AdminOrderNotifier.css';
 
-const POLL_MS = 15000;
+const POLL_MS = 30000;
 
 const AdminOrderNotifier = ({ onCountChange }) => {
   const [alerts, setAlerts] = useState([]);

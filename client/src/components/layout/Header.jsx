@@ -88,7 +88,7 @@ const Header = () => {
   return (
     <header className={`header ${scrolled ? 'header-scrolled' : ''}`}>
       <div className="header-top">
-        <p>🙏 Free Shipping above ₹2,000 &nbsp;|&nbsp; 100% Authentic Handcrafted Murtis &nbsp;|&nbsp; COD Available</p>
+        <p>🙏 Free Shipping above ₹2,000 &nbsp;|&nbsp; 100% Authentic Handcrafted Murtis &nbsp;|&nbsp; UPI Payment</p>
       </div>
       <div className="header-main">
         <button

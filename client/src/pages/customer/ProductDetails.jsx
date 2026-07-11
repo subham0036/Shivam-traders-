@@ -158,7 +158,7 @@ const ProductDetails = () => {
               <div className="trust-badges">
                 <span><FiShield /> Secure Payment</span>
                 <span><FiTruck /> Fast Delivery</span>
-                <span>💰 COD Available</span>
+                <span>📱 UPI Payment</span>
                 <span>✓ 100% Original</span>
               </div>
 
@@ -193,7 +193,7 @@ const ProductDetails = () => {
                   <input type="text" placeholder="Enter pincode" value={pincode} onChange={(e) => setPincode(e.target.value)} maxLength={6} />
                   <button className="btn btn-primary btn-sm" onClick={checkPincode}>Check</button>
                 </div>
-                {delivery && <p className="delivery-result">Estimated delivery: {new Date(delivery.estimatedDelivery).toLocaleDateString('en-IN')} ({delivery.estimatedDays} days) {delivery.codAvailable && '• COD Available'}</p>}
+                {delivery && <p className="delivery-result">Estimated delivery: {new Date(delivery.estimatedDelivery).toLocaleDateString('en-IN')} ({delivery.estimatedDays} days)</p>}
               </div>
             </div>
           </div>

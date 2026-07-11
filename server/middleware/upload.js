@@ -4,13 +4,13 @@ import path from 'path';
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
-  const allowed = /jpeg|jpg|png|webp|gif|mp4|webm/;
+  const allowed = /jpeg|jpg|png|webp|gif|heic|heif|mp4|webm/;
   const ext = allowed.test(path.extname(file.originalname).toLowerCase());
-  const mime = allowed.test(file.mimetype);
+  const mime = allowed.test(file.mimetype) || file.mimetype === 'image/heic' || file.mimetype === 'image/heif';
   if (ext && mime) {
     cb(null, true);
   } else {
-    cb(new Error('Only images and videos are allowed'), false);
+    cb(new Error('Only images (JPG, PNG, WEBP, HEIC) and videos are allowed'), false);
   }
 };
 
@@ -28,3 +28,13 @@ export const uploadFields = upload.fields([
   { name: 'screenshot', maxCount: 1 },
   { name: 'qrCode', maxCount: 1 },
 ]);
+
+export const handleUpload = (req, res, next) => {
+  uploadFields(req, res, (err) => {
+    if (!err) return next();
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ success: false, message: 'File too large. Max size is 10 MB.' });
+    }
+    return res.status(400).json({ success: false, message: err.message || 'Upload failed' });
+  });
+};

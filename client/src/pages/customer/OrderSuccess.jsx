@@ -48,7 +48,7 @@ const OrderSuccess = () => {
   const isUpiOrder = order?.paymentMethod === 'upi';
   const needsPayment = isUpiOrder && order?.paymentStatus === 'pending' && !order?.paymentScreenshot?.url;
   const paymentSubmitted = isUpiOrder && order?.paymentStatus === 'pending' && order?.paymentScreenshot?.url;
-  const isConfirmed = order?.paymentStatus === 'paid' || order?.paymentMethod === 'cod';
+  const isConfirmed = order?.paymentStatus === 'paid';
 
   const upiId = settings?.payment?.upiId || UPI_DEFAULTS.upiId;
   const upiName = settings?.payment?.upiName || UPI_DEFAULTS.upiName;

@@ -6,7 +6,7 @@ import Cart from '../models/Cart.js';
 import Coupon from '../models/Coupon.js';
 import Settings from '../models/Settings.js';
 import { generateOrderNumber, generateInvoiceNumber, calcPrices } from '../utils/helpers.js';
-import { createRazorpayOrder, verifyRazorpayPayment } from '../services/razorpayService.js';
+import { verifyRazorpayPayment } from '../services/razorpayService.js';
 import { saveLocalFile } from '../services/localUploadService.js';
 import {
   notifyOrderPlaced, notifyOrderStatus, notifyPaymentApproved, notifyPaymentRejected,
@@ -81,6 +81,9 @@ const finalizePaidOrder = async (order) => {
 export const createOrder = async (req, res) => {
   const { items, shippingAddress, paymentMethod, couponCode, giftWrapping, giftMessage, deliveryInstructions } = req.body;
   if (!items?.length) return res.status(400).json({ success: false, message: 'No order items' });
+  if (!['upi'].includes(paymentMethod)) {
+    return res.status(400).json({ success: false, message: 'Only UPI payment is available right now' });
+  }
 
   const productIds = items.map((i) => i.product);
   const products = await Product.find({ _id: { $in: productIds } });
@@ -137,27 +140,6 @@ export const createOrder = async (req, res) => {
     statusHistory: [{ status: 'pending', note: 'Order placed' }],
     paymentVerificationHistory: paymentMethod === 'upi' ? [] : undefined,
   });
-
-  if (paymentMethod === 'razorpay') {
-    const razorpayOrder = await createRazorpayOrder(prices.totalPrice, orderNumber);
-    order.razorpayOrderId = razorpayOrder.id;
-    await order.save();
-    return res.status(201).json({
-      success: true,
-      data: {
-        order,
-        razorpayOrderId: razorpayOrder.id,
-        amount: razorpayOrder.amount,
-        key: process.env.RAZORPAY_KEY_ID,
-      },
-    });
-  }
-
-  if (paymentMethod === 'cod') {
-    await deductStock(order);
-    if (req.user) await Cart.findOneAndUpdate({ user: req.user._id }, { items: [], coupon: null });
-    await notifyOrderPlaced(order);
-  }
 
   if (paymentMethod === 'upi') {
     if (req.user) await Cart.findOneAndUpdate({ user: req.user._id }, { items: [], coupon: null });

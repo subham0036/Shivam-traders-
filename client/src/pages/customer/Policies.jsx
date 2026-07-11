@@ -46,7 +46,7 @@ export const TermsConditions = () => (
     <h3 style={{ margin: '24px 0 12px', color: 'var(--text)' }}>Products</h3>
     <p>All murtis are handcrafted. Slight variations in color and finish are natural and not considered defects.</p>
     <h3 style={{ margin: '24px 0 12px', color: 'var(--text)' }}>Payments</h3>
-    <p>We accept online payments via Razorpay and Cash on Delivery (COD) for eligible orders.</p>
+    <p>We accept UPI payments. Pay via UPI and upload your payment screenshot for order confirmation.</p>
   </PolicyPage>
 );
 

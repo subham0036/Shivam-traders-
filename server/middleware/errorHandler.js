@@ -11,6 +11,10 @@ export const errorHandler = (err, req, res, next) => {
     const field = Object.keys(err.keyValue)[0];
     message = `${field} already exists`;
   }
+  if (err.name === 'MulterError') {
+    statusCode = 400;
+    message = err.code === 'LIMIT_FILE_SIZE' ? 'File too large. Max size is 10 MB.' : err.message;
+  }
   if (err.name === 'ValidationError') {
     statusCode = 400;
     message = Object.values(err.errors).map((e) => e.message).join(', ');

@@ -5,7 +5,7 @@ import UpiPaymentBox, { UPI_DEFAULTS } from '../../components/common/UpiPaymentB
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { orderAPI, adminAPI } from '../../services';
-import { formatPrice, loadRazorpay } from '../../utils/helpers';
+import { formatPrice } from '../../utils/helpers';
 import { showToast } from '../../components/common/Toast';
 import './Checkout.css';
 
@@ -13,13 +13,13 @@ const Checkout = () => {
   const { cart, prices } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [paymentMethod, setPaymentMethod] = useState('upi');
   const [loading, setLoading] = useState(false);
   const [upiSettings, setUpiSettings] = useState(null);
 
   useEffect(() => {
     adminAPI.getSettings().then(({ data }) => setUpiSettings(data.data)).catch(() => {});
   }, []);
+
   const [form, setForm] = useState({
     fullName: user?.name || '',
     phone: user?.phone || '',
@@ -54,7 +54,7 @@ const Checkout = () => {
           pincode: form.pincode,
         },
         deliveryInstructions: form.deliveryInstructions,
-        paymentMethod,
+        paymentMethod: 'upi',
         guestEmail: !user ? form.guestEmail : undefined,
         guestPhone: !user ? form.guestPhone : undefined,
         giftWrapping: cart.giftWrapping,
@@ -64,35 +64,7 @@ const Checkout = () => {
 
       const { data } = await orderAPI.create(orderData);
       const order = data.data.order || data.data;
-
-      if (paymentMethod === 'razorpay' && data.data.razorpayOrderId) {
-        const loaded = await loadRazorpay();
-        if (!loaded) throw new Error('Razorpay failed to load');
-
-        const options = {
-          key: data.data.key || import.meta.env.VITE_RAZORPAY_KEY_ID,
-          amount: data.data.amount,
-          currency: 'INR',
-          name: 'Shivam Traders',
-          description: `Order ${order.orderNumber}`,
-          order_id: data.data.razorpayOrderId,
-          handler: async (response) => {
-            await orderAPI.verifyPayment({
-              orderId: order._id,
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-            });
-            navigate(`/order-success/${order.orderNumber}`);
-          },
-          prefill: { name: form.fullName, email: form.email || form.guestEmail, contact: form.phone },
-          theme: { color: '#FF9933' },
-        };
-        const rzp = new window.Razorpay(options);
-        rzp.open();
-      } else {
-        navigate(`/order-success/${order.orderNumber}`);
-      }
+      navigate(`/order-success/${order.orderNumber}`);
     } catch (err) {
       showToast(err.response?.data?.message || 'Checkout failed');
     } finally {
@@ -176,28 +148,14 @@ const Checkout = () => {
 
               <section className="checkout-section">
                 <h3>Payment Method</h3>
-                <div className="payment-options">
-                  {[
-                    { value: 'upi', label: 'Manual UPI (Pay & Upload Screenshot)' },
-                    { value: 'razorpay', label: 'Online Payment (Razorpay)' },
-                    { value: 'cod', label: 'Cash on Delivery' },
-                  ].map((opt) => (
-                    <label key={opt.value} className={`payment-option ${paymentMethod === opt.value ? 'active' : ''}`}>
-                      <input type="radio" name="payment" value={opt.value} checked={paymentMethod === opt.value} onChange={() => setPaymentMethod(opt.value)} />
-                      {opt.label}
-                    </label>
-                  ))}
-                </div>
-
-                {paymentMethod === 'upi' && (
-                  <UpiPaymentBox
-                    amount={prices.totalPrice}
-                    upiId={upiSettings?.payment?.upiId || UPI_DEFAULTS.upiId}
-                    upiName={upiSettings?.payment?.upiName || UPI_DEFAULTS.upiName}
-                    orderNote="Shivam Traders Order"
-                    compact
-                  />
-                )}
+                <p className="form-hint">Pay via UPI — scan the QR code and upload your payment screenshot on the next page.</p>
+                <UpiPaymentBox
+                  amount={prices.totalPrice}
+                  upiId={upiSettings?.payment?.upiId || UPI_DEFAULTS.upiId}
+                  upiName={upiSettings?.payment?.upiName || UPI_DEFAULTS.upiName}
+                  orderNote="Shivam Traders Order"
+                  compact
+                />
               </section>
             </div>
 
@@ -214,7 +172,7 @@ const Checkout = () => {
               <div className="summary-row"><span>GST</span><span>{formatPrice(prices.taxPrice)}</span></div>
               <div className="summary-row total"><span>Total</span><span>{formatPrice(prices.totalPrice)}</span></div>
               <button type="submit" className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: 20 }} disabled={loading}>
-                {loading ? 'Processing...' : paymentMethod === 'cod' ? 'Place Order (COD)' : paymentMethod === 'upi' ? 'Place Order — Pay on Next Step' : 'Pay Now'}
+                {loading ? 'Processing...' : 'Place Order — Pay on Next Step'}
               </button>
             </div>
           </form>

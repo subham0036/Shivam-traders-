@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { productAPI, categoryAPI } from '../../services';
 import { GODS, MATERIALS } from '../../utils/helpers';
+import { resolveMediaUrl } from '../../utils/invoice';
 import { showToast } from '../../components/common/Toast';
 
 const emptyForm = {
@@ -222,17 +223,17 @@ const AdminProductForm = () => {
           <label>Product Photos *</label>
           <div className="admin-image-upload">
             <label className="admin-upload-btn">
-              <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" multiple onChange={handleImageSelect} />
+              <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,.heic,.heif" multiple onChange={handleImageSelect} />
               Upload from phone / computer
             </label>
-            <small className="form-hint">JPG, PNG or WEBP. You can select multiple photos.</small>
+            <small className="form-hint">JPG, PNG, WEBP or HEIC. You can select multiple photos.</small>
           </div>
 
           {(existingImages.length > 0 || imagePreviews.length > 0) && (
             <div className="admin-image-preview-grid">
               {existingImages.map((img, index) => (
                 <div key={`existing-${index}`} className="admin-image-preview">
-                  <img src={img.url} alt={img.alt || 'Product'} />
+                  <img src={resolveMediaUrl(img.url)} alt={img.alt || 'Product'} />
                   <button type="button" className="admin-image-remove" onClick={() => removeExistingImage(index)}>×</button>
                   <span className="admin-image-tag">Saved</span>
                 </div>

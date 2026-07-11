@@ -23,7 +23,7 @@ const About = () => (
       <ul style={{ lineHeight: 2, color: 'var(--text-light)' }}>
         <li>100% authentic, handcrafted murtis</li>
         <li>Premium packaging for safe delivery</li>
-        <li>Pan-India shipping with COD option</li>
+        <li>Pan-India shipping with UPI payment</li>
         <li>Dedicated customer support via WhatsApp</li>
       </ul>
       <div style={{ textAlign: 'center', marginTop: 40 }}>
