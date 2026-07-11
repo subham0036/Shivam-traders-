@@ -98,20 +98,73 @@ After `npm run seed`, log in with the **ADMIN_EMAIL** and **ADMIN_PASSWORD** you
 
 Never commit real credentials to GitHub. Use strong passwords and change them after first login in production.
 
-## Deployment
+## Deployment (Vercel + Render)
 
-### Frontend (Vercel)
-1. Connect GitHub repo to Vercel
-2. Set root directory to `client`
-3. Add environment variables from `client/.env.example`
-4. Deploy
+Recommended setup: **Vercel** for the React site, **Render** for the API, **MongoDB Atlas** for the database.
 
-### Backend (Render)
-1. Create new Web Service
-2. Set root directory to `server`
-3. Build command: `npm install`
-4. Start command: `npm start`
-5. Add all environment variables from `server/.env.example`
+### Step 1 — MongoDB Atlas (already set up locally)
+
+1. Go to [MongoDB Atlas](https://cloud.mongodb.com) → your cluster
+2. **Network Access** → **Add IP Address** → `0.0.0.0/0` (allow cloud servers)
+3. Copy your `MONGODB_URI` from Atlas → you will paste it on Render
+
+### Step 2 — Deploy backend (Render)
+
+1. Go to [render.com](https://render.com) → sign up with GitHub
+2. **New** → **Blueprint** → connect your private repo `Shivam-traders-`
+3. Render reads `render.yaml` and creates the API service
+4. Add these **Environment Variables** in Render (copy from your local `server/.env`, never commit them):
+
+| Variable | Example / notes |
+|----------|-----------------|
+| `NODE_ENV` | `production` |
+| `MONGODB_URI` | Your Atlas connection string |
+| `JWT_SECRET` | Long random string |
+| `CLIENT_URL` | Your Vercel URL (set after Step 3) |
+| `SERVER_URL` | `https://shivam-traders-api.onrender.com` (your Render URL) |
+| `ADMIN_EMAIL` | Your admin login email |
+| `ADMIN_PASSWORD` | Strong admin password |
+
+5. Click **Deploy** — wait until status is **Live**
+6. Open `https://YOUR-RENDER-URL.onrender.com/api/health` — should show `"database": "connected"`
+7. In Render **Shell**, run once: `npm run update-admin`
+
+> **Images in production:** Without Cloudinary, uploads are stored on Render disk and may reset on redeploy. For a permanent store, add real `CLOUDINARY_*` keys in Render env vars.
+
+### Step 3 — Deploy frontend (Vercel)
+
+1. Go to [vercel.com](https://vercel.com) → sign up with GitHub
+2. **Add New Project** → import `Shivam-traders-`
+3. Set **Root Directory** to `client`
+4. Add **Environment Variables**:
+
+| Variable | Value |
+|----------|-------|
+| `VITE_API_URL` | `https://YOUR-RENDER-URL.onrender.com/api` |
+| `VITE_SITE_URL` | `https://your-site.vercel.app` (Vercel shows this after deploy) |
+| `VITE_WHATSAPP_NUMBER` | `919065414511` |
+| `VITE_PHONE_NUMBER` | `+91 9065414511` |
+| `VITE_EMAIL` | Your store email |
+| `VITE_INSTAGRAM_URL` | Your Instagram URL |
+| `VITE_MAPS_LINK` | Google Maps link |
+| `VITE_MAPS_EMBED` | Google Maps embed URL |
+
+5. Click **Deploy**
+6. Copy your live Vercel URL (e.g. `https://shivam-traders.vercel.app`)
+7. Go back to **Render** → update `CLIENT_URL` to your Vercel URL → **Manual Deploy**
+
+### Step 4 — Test live site
+
+- Customer site: `https://your-site.vercel.app`
+- Admin login: `https://your-site.vercel.app/admin`
+- Add a product with photo → image should load from Render `/uploads`
+- Place a test UPI order end-to-end
+
+### Free tier notes
+
+- **Render free** sleeps after ~15 min idle — first visit may take 30–60 seconds to wake up
+- **Vercel** frontend is always fast
+- Upgrade Render to a paid plan later to avoid sleep and keep uploads persistent
 
 ### Database (MongoDB Atlas)
 1. Create free cluster at mongodb.com/atlas

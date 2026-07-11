@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
+import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
@@ -36,6 +37,8 @@ connectDB();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+await fs.mkdir(path.join(__dirname, 'uploads'), { recursive: true });
 
 const app = express();
 
