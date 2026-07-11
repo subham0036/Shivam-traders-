@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiPhone, FiArrowUp } from 'react-icons/fi';
+import { STORE } from '../../utils/storeInfo';
 import './FloatingButtons.css';
 
 const FloatingButtons = () => {
@@ -17,7 +18,7 @@ const FloatingButtons = () => {
   return (
     <div className="floating-buttons">
       <a
-        href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210'}?text=Hi, I'm interested in your murtis`}
+        href={`https://wa.me/${STORE.whatsapp}?text=Hi, I'm interested in your murtis`}
         className="float-btn whatsapp"
         target="_blank"
         rel="noopener noreferrer"
@@ -25,7 +26,7 @@ const FloatingButtons = () => {
       >
         <FaWhatsapp />
       </a>
-      <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER || '+919876543210'}`} className="float-btn call" aria-label="Call">
+      <a href={`tel:${STORE.phoneTel}`} className="float-btn call" aria-label="Call">
         <FiPhone />
       </a>
       {showTop && (

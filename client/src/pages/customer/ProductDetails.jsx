@@ -9,6 +9,7 @@ import { productAPI, reviewAPI, wishlistAPI } from '../../services';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatPrice, getDiscountPercent, shareProduct } from '../../utils/helpers';
+import { STORE } from '../../utils/storeInfo';
 import { showToast } from '../../components/common/Toast';
 import './ProductDetails.css';
 
@@ -179,10 +180,10 @@ const ProductDetails = () => {
               </div>
 
               <div className="enquiry-buttons">
-                <a href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=Enquiry about ${product.name}`} className="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">
+                <a href={`https://wa.me/${STORE.whatsapp}?text=Enquiry about ${product.name}`} className="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">
                   <FaWhatsapp /> WhatsApp Enquiry
                 </a>
-                <a href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=Request live video for ${product.name}`} className="btn btn-outline btn-sm">
+                <a href={`https://wa.me/${STORE.whatsapp}?text=Request live video for ${product.name}`} className="btn btn-outline btn-sm">
                   <FiVideo /> Request Live Video
                 </a>
               </div>
