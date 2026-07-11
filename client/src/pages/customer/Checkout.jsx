@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../../components/common/SEO';
+import UpiPaymentBox, { UPI_DEFAULTS } from '../../components/common/UpiPaymentBox';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
-import { orderAPI } from '../../services';
+import { orderAPI, adminAPI } from '../../services';
 import { formatPrice, loadRazorpay } from '../../utils/helpers';
 import { showToast } from '../../components/common/Toast';
 import './Checkout.css';
@@ -12,8 +13,13 @@ const Checkout = () => {
   const { cart, prices } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [paymentMethod, setPaymentMethod] = useState('razorpay');
+  const [paymentMethod, setPaymentMethod] = useState('upi');
   const [loading, setLoading] = useState(false);
+  const [upiSettings, setUpiSettings] = useState(null);
+
+  useEffect(() => {
+    adminAPI.getSettings().then(({ data }) => setUpiSettings(data.data)).catch(() => {});
+  }, []);
   const [form, setForm] = useState({
     fullName: user?.name || '',
     phone: user?.phone || '',
@@ -57,7 +63,7 @@ const Checkout = () => {
       };
 
       const { data } = await orderAPI.create(orderData);
-      const order = data.data.order;
+      const order = data.data.order || data.data;
 
       if (paymentMethod === 'razorpay' && data.data.razorpayOrderId) {
         const loaded = await loadRazorpay();
@@ -172,7 +178,8 @@ const Checkout = () => {
                 <h3>Payment Method</h3>
                 <div className="payment-options">
                   {[
-                    { value: 'razorpay', label: 'Online Payment (UPI / Card / Net Banking)' },
+                    { value: 'upi', label: 'Manual UPI (Pay & Upload Screenshot)' },
+                    { value: 'razorpay', label: 'Online Payment (Razorpay)' },
                     { value: 'cod', label: 'Cash on Delivery' },
                   ].map((opt) => (
                     <label key={opt.value} className={`payment-option ${paymentMethod === opt.value ? 'active' : ''}`}>
@@ -181,6 +188,16 @@ const Checkout = () => {
                     </label>
                   ))}
                 </div>
+
+                {paymentMethod === 'upi' && (
+                  <UpiPaymentBox
+                    amount={prices.totalPrice}
+                    upiId={upiSettings?.payment?.upiId || UPI_DEFAULTS.upiId}
+                    upiName={upiSettings?.payment?.upiName || UPI_DEFAULTS.upiName}
+                    orderNote="Shivam Traders Order"
+                    compact
+                  />
+                )}
               </section>
             </div>
 
@@ -197,7 +214,7 @@ const Checkout = () => {
               <div className="summary-row"><span>GST</span><span>{formatPrice(prices.taxPrice)}</span></div>
               <div className="summary-row total"><span>Total</span><span>{formatPrice(prices.totalPrice)}</span></div>
               <button type="submit" className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: 20 }} disabled={loading}>
-                {loading ? 'Processing...' : paymentMethod === 'cod' ? 'Place Order (COD)' : 'Pay Now'}
+                {loading ? 'Processing...' : paymentMethod === 'cod' ? 'Place Order (COD)' : paymentMethod === 'upi' ? 'Place Order — Pay on Next Step' : 'Pay Now'}
               </button>
             </div>
           </form>

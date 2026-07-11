@@ -25,13 +25,47 @@ export const createReview = async (req, res) => {
     title,
     comment,
     isVerified: true,
+    isApproved: false,
   });
 
   const reviews = await Review.find({ product: productId, isApproved: true });
   const avgRating = reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
   await Product.findByIdAndUpdate(productId, { rating: avgRating, numReviews: reviews.length });
 
-  res.status(201).json({ success: true, data: review });
+  res.status(201).json({ success: true, data: review, message: 'Review submitted for approval' });
+};
+
+export const getAllReviews = async (req, res) => {
+  const filter = {};
+  if (req.query.approved === 'true') filter.isApproved = true;
+  if (req.query.approved === 'false') filter.isApproved = false;
+  const reviews = await Review.find(filter)
+    .populate('user', 'name email')
+    .populate('product', 'name slug images')
+    .sort({ createdAt: -1 });
+  res.json({ success: true, data: reviews });
+};
+
+export const moderateReview = async (req, res) => {
+  const review = await Review.findById(req.params.id);
+  if (!review) return res.status(404).json({ success: false, message: 'Review not found' });
+  if (req.body.isApproved !== undefined) review.isApproved = req.body.isApproved;
+  if (req.body.adminReply) review.adminReply = req.body.adminReply;
+  await review.save();
+
+  const reviews = await Review.find({ product: review.product, isApproved: true });
+  const avgRating = reviews.length
+    ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
+    : 0;
+  await Product.findByIdAndUpdate(review.product, { rating: avgRating, numReviews: reviews.length });
+
+  res.json({ success: true, data: review });
+};
+
+export const deleteReview = async (req, res) => {
+  const review = await Review.findByIdAndDelete(req.params.id);
+  if (!review) return res.status(404).json({ success: false, message: 'Review not found' });
+  res.json({ success: true, message: 'Review deleted' });
 };
 
 // @desc    Add product question

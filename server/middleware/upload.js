@@ -25,4 +25,6 @@ export const uploadFields = upload.fields([
   { name: 'video', maxCount: 1 },
   { name: 'image', maxCount: 1 },
   { name: 'avatar', maxCount: 1 },
+  { name: 'screenshot', maxCount: 1 },
+  { name: 'qrCode', maxCount: 1 },
 ]);

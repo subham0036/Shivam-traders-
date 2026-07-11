@@ -14,4 +14,5 @@ export const STORE = {
   hours: import.meta.env.VITE_STORE_HOURS || 'Mon–Sat: 9AM – 8PM',
   mapsLink: import.meta.env.VITE_MAPS_LINK || '',
   mapsEmbed: import.meta.env.VITE_MAPS_EMBED || '',
+  instagram: import.meta.env.VITE_INSTAGRAM_URL || 'https://www.instagram.com/guptamarket_pooja',
 };

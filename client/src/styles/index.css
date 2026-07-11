@@ -72,6 +72,7 @@ input, textarea, select { font-family: inherit; }
 .app-layout main {
   flex: 1;
   position: relative;
+  z-index: 0;
 }
 
 /* ── Spiritual section styling ── */

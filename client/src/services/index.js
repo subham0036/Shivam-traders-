@@ -45,6 +45,9 @@ export const cartAPI = {
 export const orderAPI = {
   create: (data) => API.post('/orders', data),
   verifyPayment: (data) => API.post('/orders/verify-payment', data),
+  uploadUpiPayment: (id, formData) => API.post(`/orders/${id}/upi-payment`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  approvePayment: (id, data) => API.put(`/orders/${id}/approve-payment`, data),
+  rejectPayment: (id, data) => API.put(`/orders/${id}/reject-payment`, data),
   getMyOrders: () => API.get('/orders/my'),
   track: (orderNumber) => API.get(`/orders/track/${orderNumber}`),
   getById: (id) => API.get(`/orders/${id}`),
@@ -63,10 +66,14 @@ export const reviewAPI = {
   getByProduct: (productId) => API.get(`/reviews/product/${productId}`),
   create: (data) => API.post('/reviews', data),
   addQuestion: (data) => API.post('/reviews/questions', data),
+  getAllAdmin: (params) => API.get('/reviews/admin/all', { params }),
+  moderate: (id, data) => API.put(`/reviews/admin/${id}`, data),
+  deleteAdmin: (id) => API.delete(`/reviews/admin/${id}`),
 };
 
 export const adminAPI = {
   getDashboard: () => API.get('/admin/dashboard'),
+  getAnalytics: () => API.get('/admin/analytics'),
   getCustomers: () => API.get('/admin/customers'),
   toggleBlock: (id) => API.put(`/admin/customers/${id}/block`),
   getInventory: (params) => API.get('/admin/inventory', { params }),
@@ -77,8 +84,10 @@ export const adminAPI = {
   updateCoupon: (id, data) => API.put(`/admin/coupons/${id}`, data),
   deleteCoupon: (id) => API.delete(`/admin/coupons/${id}`),
   getSettings: () => API.get('/admin/settings'),
-  updateSettings: (data) => API.put('/admin/settings', data),
+  updateSettings: (data) => API.put('/admin/settings', data, data instanceof FormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : undefined),
+  addBanner: (data) => API.post('/admin/banners', data),
   subscribeNewsletter: (data) => API.post('/admin/newsletter', data),
   submitContact: (data) => API.post('/admin/contact', data),
   createStaff: (data) => API.post('/admin/staff', data),
+  getStaff: () => API.get('/admin/staff'),
 };

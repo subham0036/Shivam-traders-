@@ -31,7 +31,9 @@ const Footer = () => {
               Premium handcrafted Hindu God murtis from Jogbani, Araria (Bihar). Delivering devotion and craftsmanship across India.
             </p>
             <div className="footer-social">
-              <a href="#" aria-label="Instagram"><FiInstagram /></a>
+              {STORE.instagram && (
+                <a href={STORE.instagram} aria-label="Instagram" target="_blank" rel="noopener noreferrer"><FiInstagram /></a>
+              )}
               <a href="#" aria-label="Facebook"><FiFacebook /></a>
               <a href="#" aria-label="YouTube"><FiYoutube /></a>
               <a href={`https://wa.me/${STORE.whatsapp}`} aria-label="WhatsApp" target="_blank" rel="noopener noreferrer"><FaWhatsapp /></a>

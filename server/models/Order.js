@@ -43,7 +43,7 @@ const orderSchema = new mongoose.Schema(
     razorpaySignature: String,
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'packed', 'shipped', 'delivered', 'cancelled', 'returned', 'refunded'],
+      enum: ['pending', 'confirmed', 'packing', 'packed', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'returned', 'refunded'],
       default: 'pending',
     },
     statusHistory: [{
@@ -67,12 +67,28 @@ const orderSchema = new mongoose.Schema(
     isDelivered: { type: Boolean, default: false },
     deliveredAt: Date,
     trackingNumber: String,
+    courierName: String,
+    shippingDate: Date,
     estimatedDelivery: Date,
+    upiTransactionId: String,
+    paymentScreenshot: { url: String, publicId: String },
+    paymentVerificationHistory: [{
+      action: { type: String, enum: ['submitted', 'approved', 'rejected'] },
+      note: String,
+      admin: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      at: { type: Date, default: Date.now },
+    }],
+    adminNotes: String,
     invoiceNumber: String,
     notes: String,
   },
   { timestamps: true }
 );
+
+orderSchema.index({ status: 1, createdAt: -1 });
+orderSchema.index({ paymentStatus: 1, paymentMethod: 1 });
+orderSchema.index({ guestEmail: 1 });
+orderSchema.index({ guestPhone: 1 });
 
 const Order = mongoose.model('Order', orderSchema);
 export default Order;

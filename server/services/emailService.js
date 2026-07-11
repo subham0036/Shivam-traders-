@@ -1,24 +1,27 @@
 import nodemailer from 'nodemailer';
 
-const createTransporter = () =>
-  nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-
 export const sendEmail = async ({ to, subject, html }) => {
-  if (!process.env.SMTP_USER) {
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const configured = user && pass && !user.includes('your_email') && !pass.includes('your_app');
+
+  if (!configured) {
     console.log('Email skipped (SMTP not configured):', subject);
     return;
   }
-  const transporter = createTransporter();
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: false,
+    auth: { user, pass },
+    connectionTimeout: 5000,
+    greetingTimeout: 5000,
+    socketTimeout: 5000,
+  });
+
   await transporter.sendMail({
-    from: process.env.FROM_EMAIL || process.env.SMTP_USER,
+    from: process.env.FROM_EMAIL || user,
     to,
     subject,
     html,

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiHeart, FiShoppingBag, FiStar } from 'react-icons/fi';
 import { formatPrice, getDiscountPercent } from '../../utils/helpers';
+import { resolveProductImage } from '../../utils/storeImages';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { wishlistAPI } from '../../services';
@@ -13,7 +14,7 @@ const ProductCard = ({ product, onQuickView }) => {
   const { user } = useAuth();
 
   const discount = product.discount || getDiscountPercent(product.mrp, product.sellingPrice);
-  const image = product.images?.[0]?.url || 'https://picsum.photos/400/500';
+  const image = resolveProductImage(product.images?.[0]?.url, product.name?.length || 0);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();

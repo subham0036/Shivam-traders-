@@ -1,16 +1,20 @@
 import { Router } from 'express';
 import { protect, authorize, optionalAuth } from '../middleware/auth.js';
+import { upload } from '../middleware/upload.js';
 import {
-  createOrder, verifyPayment, getMyOrders, trackOrder, getOrder,
-  getOrders, updateOrderStatus, getInvoice,
+  createOrder, verifyPayment, uploadUpiPayment, approvePayment, rejectPayment,
+  getMyOrders, trackOrder, getOrder, getOrders, updateOrderStatus, getInvoice,
 } from '../controllers/orderController.js';
 
 const router = Router();
 
 router.post('/', optionalAuth, createOrder);
 router.post('/verify-payment', protect, verifyPayment);
+router.post('/:id/upi-payment', upload.single('screenshot'), uploadUpiPayment);
 router.get('/track/:orderNumber', trackOrder);
 router.get('/my', protect, getMyOrders);
+router.put('/:id/approve-payment', protect, authorize('admin', 'staff'), approvePayment);
+router.put('/:id/reject-payment', protect, authorize('admin', 'staff'), rejectPayment);
 router.get('/:id/invoice', protect, getInvoice);
 router.get('/:id', protect, getOrder);
 router.get('/', protect, authorize('admin', 'staff'), getOrders);

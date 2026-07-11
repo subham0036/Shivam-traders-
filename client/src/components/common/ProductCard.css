@@ -140,6 +140,23 @@
   .product-card-actions { opacity: 1; transform: none; }
 }
 
-@media (max-width: 480px) {
-  .product-card-info { padding: 12px; }
+@media (max-width: 768px) {
+  .product-card-image {
+    aspect-ratio: 1;
+  }
+
+  .product-god,
+  .product-rating {
+    display: none;
+  }
+
+  .product-name {
+    font-size: 13px;
+    -webkit-line-clamp: 1;
+    margin-bottom: 6px;
+  }
+
+  .product-price .current {
+    font-size: 15px;
+  }
 }

@@ -7,8 +7,10 @@ import xss from 'xss-clean';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
+import mongoose from 'mongoose';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
+import { wrapRouter } from './middleware/asyncHandler.js';
 
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
@@ -20,6 +22,16 @@ import reviewRoutes from './routes/reviewRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Promise Rejection:', err?.message || err);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err.message);
+  process.exit(1);
+});
+
 connectDB();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,18 +50,29 @@ app.use(mongoSanitize());
 app.use(xss());
 app.use(apiLimiter);
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.get('/api/health', (req, res) => {
-  res.json({ success: true, message: 'Shivam Traders API is running' });
+  const dbState = mongoose.connection.readyState;
+  const dbStatus = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' }[dbState] || 'unknown';
+  res.json({
+    success: true,
+    message: 'Shivam Traders API is running',
+    database: dbStatus,
+    ...(dbStatus !== 'connected' && {
+      hint: 'MongoDB Atlas → Network Access → Add Current IP Address (or 0.0.0.0/0 for development)',
+    }),
+  });
 });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/wishlist', wishlistRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api', adminRoutes);
+app.use('/api/auth', wrapRouter(authRoutes));
+app.use('/api/products', wrapRouter(productRoutes));
+app.use('/api/categories', wrapRouter(categoryRoutes));
+app.use('/api/orders', wrapRouter(orderRoutes));
+app.use('/api/cart', wrapRouter(cartRoutes));
+app.use('/api/wishlist', wrapRouter(wishlistRoutes));
+app.use('/api/reviews', wrapRouter(reviewRoutes));
+app.use('/api/admin', wrapRouter(adminRoutes));
 
 app.use(notFound);
 app.use(errorHandler);

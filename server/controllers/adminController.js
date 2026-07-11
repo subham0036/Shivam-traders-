@@ -7,6 +7,7 @@ import Coupon from '../models/Coupon.js';
 import Newsletter from '../models/Newsletter.js';
 import Settings from '../models/Settings.js';
 import { uploadToCloudinary } from '../services/cloudinaryService.js';
+import { saveLocalFile } from '../services/localUploadService.js';
 
 // @desc    Dashboard stats
 // @route   GET /api/admin/dashboard
@@ -15,17 +16,23 @@ export const getDashboard = async (req, res) => {
   today.setHours(0, 0, 0, 0);
   const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
 
-  const [todayOrders, monthOrders, totalCustomers, totalProducts, pendingOrders, deliveredOrders, cancelledOrders] = await Promise.all([
-    Order.find({ createdAt: { $gte: today }, paymentStatus: { $in: ['paid', 'pending'] } }),
+  const [todayOrders, monthOrders, totalCustomers, totalProducts, pendingOrders, pendingPayments, packingOrders, shippedOrders, deliveredOrders, cancelledOrders, recentOrders, latestCustomers] = await Promise.all([
+    Order.find({ createdAt: { $gte: today } }),
     Order.find({ createdAt: { $gte: monthStart }, paymentStatus: 'paid' }),
     User.countDocuments({ role: 'customer' }),
     Product.countDocuments(),
     Order.countDocuments({ status: 'pending' }),
+    Order.countDocuments({ paymentStatus: 'pending', paymentMethod: 'upi' }),
+    Order.countDocuments({ status: { $in: ['packing', 'packed'] } }),
+    Order.countDocuments({ status: { $in: ['shipped', 'out_for_delivery'] } }),
     Order.countDocuments({ status: 'delivered' }),
     Order.countDocuments({ status: 'cancelled' }),
+    Order.find().populate('user', 'name email').sort({ createdAt: -1 }).limit(8),
+    User.find({ role: 'customer' }).select('name email createdAt').sort({ createdAt: -1 }).limit(5),
   ]);
 
-  const todaySales = todayOrders.reduce((s, o) => s + o.totalPrice, 0);
+  const todaySales = todayOrders.filter((o) => o.paymentStatus === 'paid').reduce((s, o) => s + o.totalPrice, 0);
+  const todayOrderCount = todayOrders.length;
   const monthRevenue = monthOrders.reduce((s, o) => s + o.totalPrice, 0);
   const totalRevenue = await Order.aggregate([
     { $match: { paymentStatus: 'paid' } },
@@ -56,11 +63,59 @@ export const getDashboard = async (req, res) => {
   res.json({
     success: true,
     data: {
-      todaySales, monthRevenue,
+      todaySales, todayOrderCount, monthRevenue,
       totalRevenue: totalRevenue[0]?.total || 0,
       totalCustomers, totalProducts,
-      pendingOrders, deliveredOrders, cancelledOrders,
+      pendingOrders, pendingPayments, packingOrders, shippedOrders,
+      deliveredOrders, cancelledOrders,
       topProducts, lowStock, salesByMonth, categorySales,
+      recentOrders, latestCustomers,
+    },
+  });
+};
+
+export const getStaffUsers = async (req, res) => {
+  const staff = await User.find({ role: { $in: ['admin', 'staff'] } }).select('-password').sort({ createdAt: -1 });
+  res.json({ success: true, data: staff });
+};
+
+export const getAnalytics = async (req, res) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+  const [dailySales, paidOrders, totalOrders, topCustomers] = await Promise.all([
+    Order.aggregate([
+      { $match: { paymentStatus: 'paid', createdAt: { $gte: thirtyDaysAgo } } },
+      { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, revenue: { $sum: '$totalPrice' }, orders: { $sum: 1 } } },
+      { $sort: { _id: 1 } },
+    ]),
+    Order.countDocuments({ paymentStatus: 'paid' }),
+    Order.countDocuments(),
+    Order.aggregate([
+      { $match: { paymentStatus: 'paid', user: { $ne: null } } },
+      { $group: { _id: '$user', total: { $sum: '$totalPrice' }, orders: { $sum: 1 } } },
+      { $sort: { total: -1 } },
+      { $limit: 10 },
+      { $lookup: { from: 'users', localField: '_id', foreignField: '_id', as: 'user' } },
+      { $unwind: '$user' },
+    ]),
+  ]);
+
+  const avgOrderValue = paidOrders ? (await Order.aggregate([
+    { $match: { paymentStatus: 'paid' } },
+    { $group: { _id: null, avg: { $avg: '$totalPrice' } } },
+  ]))[0]?.avg || 0 : 0;
+
+  res.json({
+    success: true,
+    data: {
+      dailySales,
+      paidOrders,
+      totalOrders,
+      conversionRate: totalOrders ? ((paidOrders / totalOrders) * 100).toFixed(1) : 0,
+      avgOrderValue,
+      topCustomers,
     },
   });
 };
@@ -174,9 +229,41 @@ export const getSettings = async (req, res) => {
 export const updateSettings = async (req, res) => {
   let settings = await Settings.findOne();
   if (!settings) settings = await Settings.create({});
-  Object.assign(settings, req.body);
-  if (req.file) {
-    settings.logo = await uploadToCloudinary(req.file.buffer, 'settings');
+
+  const body = { ...req.body };
+  if (typeof body.payment === 'string') {
+    try { body.payment = JSON.parse(body.payment); } catch { /* keep string */ }
+  }
+  if (typeof body.contact === 'string') {
+    try { body.contact = JSON.parse(body.contact); } catch { /* keep string */ }
+  }
+  if (typeof body.shipping === 'string') {
+    try { body.shipping = JSON.parse(body.shipping); } catch { /* keep string */ }
+  }
+  if (typeof body.invoice === 'string') {
+    try { body.invoice = JSON.parse(body.invoice); } catch { /* keep string */ }
+  }
+
+  const nestedKeys = ['contact', 'social', 'shipping', 'seo', 'payment', 'invoice', 'policies', 'analytics', 'flashSale', 'exitIntentCoupon'];
+  for (const [key, val] of Object.entries(body)) {
+    if (nestedKeys.includes(key) && val && typeof val === 'object') {
+      settings[key] = { ...(settings[key]?.toObject?.() || settings[key] || {}), ...val };
+      settings.markModified(key);
+    } else if (key !== 'banners') {
+      settings[key] = val;
+    }
+  }
+  if (req.files?.image?.[0]) {
+    try {
+      settings.logo = await uploadToCloudinary(req.files.image[0].buffer, 'settings');
+    } catch {
+      settings.logo = await saveLocalFile(req.files.image[0], 'settings');
+    }
+  }
+  if (req.files?.qrCode?.[0]) {
+    settings.payment = { ...(settings.payment?.toObject?.() || settings.payment || {}) };
+    settings.payment.upiQrCode = await saveLocalFile(req.files.qrCode[0], 'settings');
+    settings.markModified('payment');
   }
   await settings.save();
   res.json({ success: true, data: settings });

@@ -53,6 +53,27 @@ const settingsSchema = new mongoose.Schema(
       discount: Number,
       isActive: { type: Boolean, default: true },
     },
+    payment: {
+      upiId: { type: String, default: '9065414511@sbi' },
+      upiName: { type: String, default: 'Gaurav Gupta' },
+      upiQrCode: { url: String, publicId: String },
+      codEnabled: { type: Boolean, default: true },
+      razorpayEnabled: { type: Boolean, default: true },
+      manualUpiEnabled: { type: Boolean, default: true },
+    },
+    invoice: {
+      prefix: { type: String, default: 'ST-INV' },
+      gstNumber: String,
+      currency: { type: String, default: 'INR' },
+    },
+    policies: {
+      about: String,
+      faqs: [{ question: String, answer: String }],
+      testimonials: [{ name: String, city: String, text: String, rating: Number }],
+    },
+    analytics: {
+      facebookPixelId: String,
+    },
   },
   { timestamps: true }
 );

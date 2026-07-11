@@ -4,6 +4,7 @@ import SEO from '../../components/common/SEO';
 import { useAuth } from '../../context/AuthContext';
 import { authAPI, orderAPI, wishlistAPI } from '../../services';
 import { formatPrice, ORDER_STATUS } from '../../utils/helpers';
+import { openInvoicePrint } from '../../utils/invoice';
 import { showToast } from '../../components/common/Toast';
 import '../customer/Auth.css';
 
@@ -46,9 +47,7 @@ const Profile = () => {
 
   const downloadInvoice = async (orderId) => {
     const { data } = await orderAPI.getInvoice(orderId);
-    const w = window.open('', '_blank');
-    w.document.write(`<html><body style="font-family:serif;padding:40px"><h1>Shivam Traders</h1><h2>Invoice ${data.data.order.invoiceNumber}</h2><p>Order: ${data.data.order.orderNumber}</p><p>Total: ₹${data.data.order.totalPrice}</p></body></html>`);
-    w.print();
+    openInvoicePrint(data.data);
   };
 
   if (!user) return null;
@@ -81,8 +80,11 @@ const Profile = () => {
                     </div>
                     <div>
                       <span>{formatPrice(o.totalPrice)}</span>
+                      {o.paymentMethod === 'upi' && o.paymentStatus === 'pending' && !o.paymentScreenshot?.url && (
+                        <Link to={`/order-success/${o.orderNumber}`} className="btn btn-sm btn-primary">Pay via UPI</Link>
+                      )}
                       <button className="btn btn-outline btn-sm" onClick={() => downloadInvoice(o._id)}>Invoice</button>
-                      <Link to={`/track-order?order=${o.orderNumber}`} className="btn btn-sm btn-primary">Track</Link>
+                      <Link to={`/track-order?order=${o.orderNumber}`} className="btn btn-sm btn-outline">Track</Link>
                     </div>
                   </div>
                 ))}

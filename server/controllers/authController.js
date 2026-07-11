@@ -22,7 +22,7 @@ export const register = async (req, res) => {
 // @route   POST /api/auth/login
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email: email?.toLowerCase().trim() }).select('+password');
   if (!user || !(await user.matchPassword(password))) {
     return res.status(401).json({ success: false, message: 'Invalid email or password' });
   }

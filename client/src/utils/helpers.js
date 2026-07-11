@@ -30,13 +30,17 @@ export const MATERIALS = [
 export const ORDER_STATUS = {
   pending: 'Pending',
   confirmed: 'Confirmed',
+  packing: 'Packing',
   packed: 'Packed',
   shipped: 'Shipped',
+  out_for_delivery: 'Out for Delivery',
   delivered: 'Delivered',
   cancelled: 'Cancelled',
   returned: 'Returned',
   refunded: 'Refunded',
 };
+
+export const ORDER_TIMELINE = ['pending', 'confirmed', 'packing', 'packed', 'shipped', 'out_for_delivery', 'delivered'];
 
 export const loadRazorpay = () =>
   new Promise((resolve) => {

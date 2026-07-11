@@ -12,7 +12,8 @@ const reviewSchema = new mongoose.Schema(
     images: [{ url: String, publicId: String }],
     isVerified: { type: Boolean, default: false },
     helpful: { type: Number, default: 0 },
-    isApproved: { type: Boolean, default: true },
+    isApproved: { type: Boolean, default: false },
+    adminReply: String,
   },
   { timestamps: true }
 );

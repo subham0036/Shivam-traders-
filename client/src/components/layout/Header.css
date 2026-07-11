@@ -1,7 +1,7 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1100;
   background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -67,7 +67,10 @@
   font-family: var(--font-devanagari);
 }
 
-.nav { display: flex; gap: clamp(16px, 3vw, 32px); }
+.nav {
+  display: flex;
+  gap: clamp(16px, 3vw, 32px);
+}
 
 .nav a {
   font-size: clamp(12px, 2vw, 14px);
@@ -89,8 +92,14 @@
   transition: var(--transition);
 }
 
-.nav a:hover::after, .nav a.active::after { width: 100%; }
+.nav a:hover::after,
+.nav a.active::after { width: 100%; }
+
 .nav a.active { color: var(--saffron); }
+
+.nav-admin-link {
+  color: var(--maroon) !important;
+}
 
 .header-actions {
   display: flex;
@@ -133,6 +142,8 @@
   padding: 16px 0;
   overflow: hidden;
   box-shadow: var(--shadow);
+  position: relative;
+  z-index: 1101;
 }
 
 .search-overlay form {
@@ -159,23 +170,36 @@
   padding: 6px;
 }
 
-/* Mobile nav overlay backdrop */
+/* Portaled mobile nav — rendered on document.body */
 .nav-backdrop {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(44, 24, 16, 0.5);
-  z-index: 1400;
+  background: rgba(44, 24, 16, 0.55);
+  z-index: 99998;
 }
 
 .nav-backdrop.open { display: block; }
 
-@media (max-width: 900px) {
-  .menu-toggle { display: flex; align-items: center; justify-content: center; }
+.nav-mobile {
+  display: none;
+}
 
-  .nav {
+@media (max-width: 900px) {
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-desktop { display: none; }
+
+  .nav-mobile {
+    display: flex;
     position: fixed;
-    top: 0; left: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
     width: min(300px, 85vw);
     background: var(--white);
     flex-direction: column;
@@ -186,18 +210,18 @@
     opacity: 0;
     transition: var(--transition);
     pointer-events: none;
-    z-index: 1500;
+    z-index: 99999;
     border-right: 3px solid var(--gold);
   }
 
-  .nav a {
+  .nav-mobile a {
     padding: 14px 0;
     border-bottom: 1px solid var(--border);
     font-size: 15px;
     width: 100%;
   }
 
-  .nav-open {
+  .nav-mobile.nav-open {
     transform: translateX(0);
     opacity: 1;
     pointer-events: all;
