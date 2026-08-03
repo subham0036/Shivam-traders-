@@ -17,7 +17,6 @@ const ForgotPassword = lazy(() => import('./pages/customer/ForgotPassword'));
 const Profile = lazy(() => import('./pages/customer/Profile'));
 const Wishlist = lazy(() => import('./pages/customer/Wishlist'));
 const Categories = lazy(() => import('./pages/customer/Categories'));
-const About = lazy(() => import('./pages/customer/About'));
 const Contact = lazy(() => import('./pages/customer/Contact'));
 const AdminPanel = lazy(() => import('./pages/admin/AdminPanel'));
 const PrivacyPolicy = lazy(() => import('./pages/customer/Policies').then(m => ({ default: m.PrivacyPolicy })));
@@ -46,7 +45,6 @@ function App() {
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="wishlist" element={<Wishlist />} />
-          <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="refund-policy" element={<RefundPolicy />} />

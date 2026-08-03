@@ -47,7 +47,6 @@ const Footer = () => {
               <li><Link to="/shop?premium=true">Premium Collection</Link></li>
               <li><Link to="/shop?newArrival=true">New Arrivals</Link></li>
               <li><Link to="/shop?bestSeller=true">Best Sellers</Link></li>
-              <li><Link to="/about">Our Story</Link></li>
             </ul>
           </div>
 
