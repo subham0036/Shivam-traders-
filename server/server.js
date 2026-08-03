@@ -9,6 +9,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
 import mongoose from 'mongoose';
+import { migrateMediaUrls } from './utils/migrateMediaUrls.js';
+import { getUploadsRoot } from './services/localUploadService.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
 import { wrapRouter } from './middleware/asyncHandler.js';
@@ -35,10 +37,16 @@ process.on('uncaughtException', (err) => {
 
 connectDB();
 
+mongoose.connection.once('open', () => {
+  migrateMediaUrls().catch((err) => {
+    console.error('Media URL migration skipped:', err.message);
+  });
+});
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-await fs.mkdir(path.join(__dirname, 'uploads'), { recursive: true });
+await fs.mkdir(getUploadsRoot(), { recursive: true });
 
 const app = express();
 
@@ -100,7 +108,7 @@ if (process.env.NODE_ENV !== 'development') {
   });
 }
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(getUploadsRoot()));
 
 app.get('/api/health', (req, res) => {
   const dbState = mongoose.connection.readyState;

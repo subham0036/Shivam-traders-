@@ -8,6 +8,22 @@ import { formatPrice } from '../../utils/helpers';
 import { showToast } from '../../components/common/Toast';
 import './Checkout.css';
 
+const CHECKOUT_STORAGE_KEY = 'st_checkout_form';
+
+const emptyForm = {
+  fullName: '',
+  phone: '',
+  email: '',
+  addressLine1: '',
+  addressLine2: '',
+  city: '',
+  state: '',
+  pincode: '',
+  deliveryInstructions: '',
+  guestEmail: '',
+  guestPhone: '',
+};
+
 const Checkout = () => {
   const { cart, prices, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
@@ -16,29 +32,39 @@ const Checkout = () => {
   const [couponCode, setCouponCode] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
 
+  const [form, setForm] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(CHECKOUT_STORAGE_KEY);
+      if (saved) return { ...emptyForm, ...JSON.parse(saved) };
+    } catch { /* ignore */ }
+    return { ...emptyForm };
+  });
+
   useEffect(() => {
     if (cart.coupon?.code) setCouponCode(cart.coupon.code);
   }, [cart.coupon?.code]);
 
-  const [form, setForm] = useState({
-    fullName: user?.name || '',
-    phone: user?.phone || '',
-    email: user?.email || '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    pincode: '',
-    deliveryInstructions: '',
-    guestEmail: '',
-    guestPhone: '',
-  });
+  useEffect(() => {
+    if (!user) return;
+    setForm((prev) => ({
+      ...prev,
+      fullName: prev.fullName || user.name || '',
+      phone: prev.phone || user.phone || '',
+      email: prev.email || user.email || '',
+    }));
+  }, [user]);
+
+  useEffect(() => {
+    sessionStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(form));
+  }, [form]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleCoupon = async (e) => {
-    e.preventDefault();
-    if (!couponCode.trim()) return showToast('Enter a coupon code');
+  const handleCoupon = async () => {
+    if (!couponCode.trim()) {
+      showToast('Enter a coupon code');
+      return;
+    }
     setCouponLoading(true);
     try {
       await applyCoupon(couponCode.trim());
@@ -63,8 +89,7 @@ const Checkout = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const placeOrder = async () => {
     if (!cart.items?.length) return showToast('Cart is empty');
 
     setLoading(true);
@@ -91,12 +116,18 @@ const Checkout = () => {
 
       const { data } = await orderAPI.create(orderData);
       const order = data.data.order || data.data;
+      sessionStorage.removeItem(CHECKOUT_STORAGE_KEY);
       navigate(`/order-success/${order.orderNumber}`);
     } catch (err) {
       showToast(err.response?.data?.message || 'Checkout failed');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await placeOrder();
   };
 
   return (
@@ -111,7 +142,7 @@ const Checkout = () => {
       </div>
       <div className="checkout-page">
         <div className="container">
-          <form onSubmit={handleSubmit} className="checkout-layout">
+          <form onSubmit={handleSubmit} className="checkout-layout" noValidate={false}>
             <div className="checkout-form">
               {!user && (
                 <section className="checkout-section checkout-login-banner">
@@ -197,21 +228,34 @@ const Checkout = () => {
                       </button>
                     </div>
                   ) : (
-                    <form onSubmit={handleCoupon} className="checkout-coupon-form">
+                    <div className="checkout-coupon-form">
                       <input
                         className="form-control"
                         placeholder="Enter coupon code"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleCoupon();
+                          }
+                        }}
                       />
-                      <button type="submit" className="btn btn-outline btn-sm" disabled={couponLoading}>
+                      <button type="button" className="btn btn-outline btn-sm" onClick={handleCoupon} disabled={couponLoading}>
                         {couponLoading ? 'Applying...' : 'Apply'}
                       </button>
-                    </form>
+                    </div>
                   )}
                 </div>
                 <p className="form-hint">Pay via UPI after placing your order — QR code and payment details will appear on the next page.</p>
               </section>
+
+              <div className="checkout-bottom-actions">
+                <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
+                  {loading ? 'Processing...' : 'Place Order — Proceed to Payment'}
+                </button>
+                <p className="checkout-bottom-total">Total: {formatPrice(prices.totalPrice)}</p>
+              </div>
             </div>
 
             <div className="checkout-summary">
@@ -231,8 +275,8 @@ const Checkout = () => {
               )}
               <div className="summary-row"><span>Shipping</span><span>{prices.shippingPrice === 0 ? 'FREE' : formatPrice(prices.shippingPrice)}</span></div>
               <div className="summary-row total"><span>Total</span><span>{formatPrice(prices.totalPrice)}</span></div>
-              <button type="submit" className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: 20 }} disabled={loading}>
-                {loading ? 'Processing...' : 'Place Order'}
+              <button type="submit" className="btn btn-primary btn-lg checkout-summary-btn" disabled={loading}>
+                {loading ? 'Processing...' : 'Place Order — Proceed to Payment'}
               </button>
             </div>
           </form>

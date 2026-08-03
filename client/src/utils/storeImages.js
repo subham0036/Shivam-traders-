@@ -52,11 +52,17 @@ export const getServerBase = () => {
   return 'http://localhost:5002';
 };
 
+export const isRenderUploadUrl = (url) =>
+  /onrender\.com\/uploads\//i.test(url || '');
+
 export const resolveMediaUrl = (url) => {
   if (!url) return '';
-  if (isLocalMediaUrl(url)) {
-    const path = url.replace(/^https?:\/\/[^/]+/, '');
-    return `${getServerBase()}${path}`;
+  if (url.startsWith('/uploads/')) {
+    return `${getServerBase()}${url}`;
+  }
+  if (isLocalMediaUrl(url) || isRenderUploadUrl(url)) {
+    const pathPart = url.replace(/^https?:\/\/[^/]+/, '');
+    return `${getServerBase()}${pathPart}`;
   }
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   return `${getServerBase()}${url.startsWith('/') ? url : `/${url}`}`;
@@ -65,17 +71,9 @@ export const resolveMediaUrl = (url) => {
 export const pickProductImageUrl = (images = [], fallbackIndex = 0) => {
   const urls = (images || []).map((img) => img?.url).filter(Boolean);
 
-  if (isLiveSite()) {
-    const remote = urls.find(
-      (url) => /^https:\/\//.test(url) && !isLocalMediaUrl(url) && !isPlaceholderImage(url),
-    );
-    if (remote) return remote;
-  }
-
   for (const url of urls) {
     const resolved = resolveMediaUrl(url);
     if (resolved && !isPlaceholderImage(resolved)) {
-      if (isLiveSite() && isLocalMediaUrl(resolved)) continue;
       return resolved;
     }
   }
@@ -86,8 +84,7 @@ export const pickProductImageUrl = (images = [], fallbackIndex = 0) => {
 export const resolveProductImages = (images = [], fallbackIndex = 0) => {
   const resolved = (images || [])
     .map((img) => ({ ...img, url: resolveMediaUrl(img?.url) }))
-    .filter((img) => img.url && !isPlaceholderImage(img.url))
-    .filter((img) => !(isLiveSite() && isLocalMediaUrl(img.url)));
+    .filter((img) => img.url && !isPlaceholderImage(img.url));
 
   if (resolved.length) return resolved;
 
@@ -103,9 +100,6 @@ export const resolveProductImage = (urlOrImages, index = 0) => {
   }
   const url = urlOrImages;
   if (url && !isPlaceholderImage(url)) {
-    if (isLiveSite() && isLocalMediaUrl(url)) {
-      return PRODUCT_PLACEHOLDERS[index % PRODUCT_PLACEHOLDERS.length];
-    }
     return resolveMediaUrl(url);
   }
   return PRODUCT_PLACEHOLDERS[index % PRODUCT_PLACEHOLDERS.length];

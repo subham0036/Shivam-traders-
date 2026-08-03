@@ -19,8 +19,11 @@ const Cart = () => {
   const [giftWrap, setGiftWrap] = useState(cart.giftWrapping || false);
   const [giftMessage, setGiftMessage] = useState(cart.giftMessage || '');
 
-  const handleCoupon = async (e) => {
-    e.preventDefault();
+  const handleCoupon = async () => {
+    if (!couponCode.trim()) {
+      showToast('Enter a coupon code');
+      return;
+    }
     try {
       await applyCoupon(couponCode);
       showToast('Coupon applied!');
@@ -99,10 +102,10 @@ const Cart = () => {
                 ))}
 
                 <div className="cart-extras">
-                  <form onSubmit={handleCoupon} className="coupon-form">
-                    <input className="form-control" placeholder="Coupon code" value={couponCode} onChange={(e) => setCouponCode(e.target.value)} />
-                    <button className="btn btn-outline btn-sm">Apply</button>
-                  </form>
+                  <div className="coupon-form">
+                    <input className="form-control" placeholder="Coupon code" value={couponCode} onChange={(e) => setCouponCode(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleCoupon(); } }} />
+                    <button type="button" className="btn btn-outline btn-sm" onClick={handleCoupon}>Apply</button>
+                  </div>
                   <label className="gift-wrap">
                     <input type="checkbox" checked={giftWrap} onChange={(e) => handleGift(e.target.checked)} />
                     <FiGift /> Gift Wrapping (Free)

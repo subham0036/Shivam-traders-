@@ -4,6 +4,16 @@ export const normalizeMediaUrl = (url) => {
   if (!url || typeof url !== 'string') return url;
 
   const serverBase = getServerBase();
+
+  if (url.startsWith('/uploads/')) {
+    return serverBase ? `${serverBase}${url}` : url;
+  }
+
+  const uploadPath = url.match(/(\/uploads\/[^?#]+)/);
+  if (uploadPath && serverBase) {
+    return `${serverBase}${uploadPath[1]}`;
+  }
+
   if (serverBase && /^https?:\/\/(localhost|127\.0\.0\.1):\d+/i.test(url)) {
     return url.replace(/^https?:\/\/[^/]+/, serverBase);
   }
