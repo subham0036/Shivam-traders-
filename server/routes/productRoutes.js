@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { protect, authorize } from '../middleware/auth.js';
+import { requireDB } from '../middleware/requireDB.js';
 import { handleUpload } from '../middleware/upload.js';
 import {
   getProducts, getProduct, createProduct, updateProduct, deleteProduct,
@@ -7,6 +8,8 @@ import {
 } from '../controllers/productController.js';
 
 const router = Router();
+
+router.use(requireDB);
 
 router.get('/', getProducts);
 router.get('/delivery/:pincode', checkDelivery);
