@@ -43,20 +43,29 @@ await fs.mkdir(path.join(__dirname, 'uploads'), { recursive: true });
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+const clientUrls = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map((url) => url.trim())
+  .filter(Boolean);
+
 const allowedOrigins = [
-  process.env.CLIENT_URL,
+  ...clientUrls,
   'http://localhost:5173',
   'http://localhost:5174',
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5174',
-].filter(Boolean);
+];
 
 const isLocalDevOrigin = (origin) =>
   /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
 
+const isVercelAppOrigin = (origin) =>
+  /^https:\/\/shivam-traders[\w-]*\.vercel\.app$/.test(origin);
+
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    if (isVercelAppOrigin(origin)) return callback(null, true);
     if (process.env.NODE_ENV !== 'production' && isLocalDevOrigin(origin)) {
       return callback(null, true);
     }
