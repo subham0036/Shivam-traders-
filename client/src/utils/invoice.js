@@ -9,7 +9,6 @@ export const getStoreDetails = (settings) => ({
   address: settings?.contact?.address || STORE.address.full,
   phone: settings?.contact?.phone || STORE.phone || '',
   email: settings?.contact?.email || STORE.email || '',
-  gst: settings?.invoice?.gstNumber || '',
   hours: settings?.contact?.businessHours || STORE.hours,
 });
 
@@ -239,13 +238,12 @@ export const buildInvoiceHtml = ({ order, settings }) => {
         <div class="header-left">
           <h1>🕉 ${store.name}</h1>
           <p class="tagline">${store.tagline}</p>
-          <span class="badge">TAX INVOICE</span>
+          <span class="badge">INVOICE</span>
         </div>
         <div class="store-meta">
           <div>${store.address.replace(/, /g, '<br/>')}</div>
           <div style="margin-top:8px">📞 ${store.phone}</div>
           <div>✉ ${store.email}</div>
-          ${store.gst ? `<div style="margin-top:6px"><strong>GSTIN:</strong> ${store.gst}</div>` : ''}
         </div>
       </div>
 
@@ -284,7 +282,6 @@ export const buildInvoiceHtml = ({ order, settings }) => {
             <div class="row"><span>Subtotal</span><span>${formatMoney(order.itemsPrice)}</span></div>
             ${order.couponDiscount ? `<div class="row"><span>Coupon Discount</span><span>-${formatMoney(order.couponDiscount)}</span></div>` : ''}
             <div class="row"><span>Shipping</span><span>${order.shippingPrice === 0 ? 'FREE' : formatMoney(order.shippingPrice)}</span></div>
-            <div class="row"><span>GST</span><span>${formatMoney(order.taxPrice)}</span></div>
             <div class="row grand"><span>Grand Total</span><span>${formatMoney(order.totalPrice)}</span></div>
           </div>
         </div>

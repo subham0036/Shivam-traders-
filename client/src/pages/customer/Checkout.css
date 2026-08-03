@@ -52,6 +52,11 @@
   color: var(--text);
 }
 
+.payment-option input[type="radio"] {
+  accent-color: var(--saffron);
+  flex-shrink: 0;
+}
+
 .payment-option.active {
   border-color: var(--saffron);
   background: linear-gradient(135deg, rgba(255,153,51,0.06), rgba(212,175,55,0.06));

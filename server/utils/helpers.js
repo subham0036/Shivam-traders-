@@ -42,8 +42,8 @@ export const calcPrices = (items, shipping = {}, coupon = null, giftWrapping = f
   const shippingPrice = subtotal >= (shipping.freeShippingThreshold || 2000)
     ? 0
     : (shipping.standardShippingCharge || 99);
-  const taxPrice = Math.round((subtotal * (shipping.gstRate || 18)) / 100);
-  const totalPrice = subtotal + shippingPrice + taxPrice + giftWrappingCharge;
+  const taxPrice = 0;
+  const totalPrice = subtotal + shippingPrice + giftWrappingCharge;
 
   return { itemsPrice, discount, couponDiscount, giftWrappingCharge, shippingPrice, taxPrice, totalPrice };
 };

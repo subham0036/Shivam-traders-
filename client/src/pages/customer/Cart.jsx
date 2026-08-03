@@ -118,7 +118,6 @@ const Cart = () => {
                 <div className="summary-row"><span>Subtotal</span><span>{formatPrice(prices.itemsPrice)}</span></div>
                 {prices.couponDiscount > 0 && <div className="summary-row discount"><span>Coupon Discount</span><span>-{formatPrice(prices.couponDiscount)}</span></div>}
                 <div className="summary-row"><span>Shipping</span><span>{prices.shippingPrice === 0 ? 'FREE' : formatPrice(prices.shippingPrice)}</span></div>
-                <div className="summary-row"><span>GST (18%)</span><span>{formatPrice(prices.taxPrice)}</span></div>
                 {prices.giftWrappingCharge > 0 && <div className="summary-row"><span>Gift Wrapping</span><span>{formatPrice(prices.giftWrappingCharge)}</span></div>}
                 <div className="summary-row total"><span>Total</span><span>{formatPrice(prices.totalPrice)}</span></div>
                 {!user && (

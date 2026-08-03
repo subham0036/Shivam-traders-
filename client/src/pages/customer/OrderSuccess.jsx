@@ -46,6 +46,7 @@ const OrderSuccess = () => {
   };
 
   const isUpiOrder = order?.paymentMethod === 'upi';
+  const isCodOrder = order?.paymentMethod === 'cod';
   const needsPayment = isUpiOrder && order?.paymentStatus === 'pending' && !order?.paymentScreenshot?.url;
   const paymentSubmitted = isUpiOrder && order?.paymentStatus === 'pending' && order?.paymentScreenshot?.url;
   const isConfirmed = order?.paymentStatus === 'paid';
@@ -59,7 +60,11 @@ const OrderSuccess = () => {
   let Icon = FiCheckCircle;
   let iconClass = 'order-success-icon confirmed';
 
-  if (needsPayment) {
+  if (isCodOrder) {
+    pageTitle = 'Order Confirmed';
+    heading = 'Order Confirmed!';
+    subtext = 'Your COD order is confirmed. Please keep the exact amount ready for delivery.';
+  } else if (needsPayment) {
     pageTitle = 'Complete Payment';
     heading = 'Complete Your UPI Payment';
     subtext = 'Your order is saved. Pay the exact amount below — it is not confirmed until payment is verified.';
@@ -88,9 +93,15 @@ const OrderSuccess = () => {
           <h1>{heading}</h1>
           <p className="order-success-sub">{subtext}</p>
 
+          {isCodOrder && order && (
+            <div className="order-pending-banner">
+              Cash on Delivery — pay {formatPrice(order.totalPrice)} when your order arrives
+            </div>
+          )}
+
           {needsPayment && (
             <div className="order-pending-banner">
-              ⏳ Payment pending — order will be confirmed after admin verifies your UPI payment
+              Payment pending — order will be confirmed after admin verifies your UPI payment
             </div>
           )}
 
@@ -100,7 +111,7 @@ const OrderSuccess = () => {
             <div className="order-success-card">
               <p><strong>Order Number:</strong> {order.orderNumber}</p>
               <p><strong>Total:</strong> {formatPrice(order.totalPrice)}</p>
-              <p><strong>Payment:</strong> {order.paymentMethod?.toUpperCase()} — <span className={needsPayment ? 'status-pending' : ''}>{order.paymentStatus}</span></p>
+              <p><strong>Payment:</strong> {order.paymentMethod?.toUpperCase()} — <span className={needsPayment ? 'status-pending' : ''}>{isCodOrder ? 'pay on delivery' : order.paymentStatus}</span></p>
 
               {needsPayment && (
                 <div className="upi-payment-section">

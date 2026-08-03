@@ -81,8 +81,13 @@ const finalizePaidOrder = async (order) => {
 export const createOrder = async (req, res) => {
   const { items, shippingAddress, paymentMethod, couponCode, giftWrapping, giftMessage, deliveryInstructions } = req.body;
   if (!items?.length) return res.status(400).json({ success: false, message: 'No order items' });
-  if (!['upi'].includes(paymentMethod)) {
-    return res.status(400).json({ success: false, message: 'Only UPI payment is available right now' });
+  if (!['upi', 'cod'].includes(paymentMethod)) {
+    return res.status(400).json({ success: false, message: 'Invalid payment method' });
+  }
+
+  const settings = await getSettings();
+  if (paymentMethod === 'cod' && settings.payment?.codEnabled === false) {
+    return res.status(400).json({ success: false, message: 'Cash on Delivery is not available' });
   }
 
   const productIds = items.map((i) => i.product);
@@ -106,7 +111,6 @@ export const createOrder = async (req, res) => {
   }
   if (hasStockIssue) return res.status(400).json({ success: false, message: 'Insufficient stock for some items' });
 
-  const settings = await getSettings();
   let coupon = null;
   if (couponCode) {
     coupon = await Coupon.findOne({ code: couponCode.toUpperCase(), isActive: true });
@@ -143,6 +147,23 @@ export const createOrder = async (req, res) => {
 
   if (paymentMethod === 'upi') {
     if (req.user) await Cart.findOneAndUpdate({ user: req.user._id }, { items: [], coupon: null });
+    await notifyOrderPlaced(order);
+  } else if (paymentMethod === 'cod') {
+    order.status = 'confirmed';
+    order.statusHistory.push({ status: 'confirmed', note: 'COD order — pay on delivery' });
+    await order.save();
+    await deductStock(order);
+    if (req.user) {
+      await Cart.findOneAndUpdate({ user: req.user._id }, { items: [], coupon: null });
+      const userDoc = await User.findById(req.user._id);
+      if (userDoc) {
+        userDoc.totalPurchases += order.totalPrice;
+        await userDoc.save();
+      }
+    }
+    if (order.couponCode) {
+      await Coupon.findOneAndUpdate({ code: order.couponCode }, { $inc: { usedCount: 1 } });
+    }
     await notifyOrderPlaced(order);
   }
 
