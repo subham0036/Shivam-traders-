@@ -38,6 +38,7 @@ export const cartAPI = {
   update: (productId, data) => API.put(`/cart/${productId}`, data),
   remove: (productId, sessionId) => API.delete(`/cart/${productId}`, { params: { sessionId } }),
   applyCoupon: (data) => API.post('/cart/coupon', data),
+  removeCoupon: (sessionId) => API.delete('/cart/coupon', { params: { sessionId } }),
   updateGift: (data) => API.put('/cart/gift', data),
   clear: (sessionId) => API.delete('/cart', { params: { sessionId } }),
 };

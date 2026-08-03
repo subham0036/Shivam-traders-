@@ -85,6 +85,54 @@
 
 .summary-item span:first-child { flex: 1; }
 
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: clamp(13px, 2vw, 14px);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-light);
+}
+
+.summary-row.discount { color: #1E8449; }
+.summary-row.total { font-size: clamp(17px, 3vw, 20px); font-weight: 700; border: none; padding-top: 14px; color: var(--maroon-dark); }
+
+.checkout-coupon {
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.checkout-coupon-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--maroon-dark);
+  margin-bottom: 10px;
+}
+
+.checkout-coupon-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.checkout-coupon-form input { flex: 1; min-width: 140px; }
+
+.checkout-coupon-applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, rgba(30, 132, 73, 0.08), rgba(212, 175, 55, 0.08));
+  border-radius: var(--radius);
+  border: 1px solid rgba(30, 132, 73, 0.25);
+  font-size: 14px;
+  color: var(--text);
+}
+
 .checkout-login-banner {
   background: linear-gradient(135deg, rgba(255, 153, 51, 0.08), rgba(212, 175, 55, 0.1));
   border-color: var(--saffron) !important;
@@ -108,4 +156,5 @@
 
 @media (max-width: 480px) {
   .checkout-section .grid-2, .checkout-section .grid-3 { grid-template-columns: 1fr; }
+  .checkout-coupon-form .btn { width: 100%; }
 }

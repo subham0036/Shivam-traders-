@@ -49,6 +49,11 @@ export const CartProvider = ({ children }) => {
     return data;
   };
 
+  const removeCoupon = async () => {
+    await cartAPI.removeCoupon(getSessionId());
+    await fetchCart();
+  };
+
   const updateGift = async (giftWrapping, giftMessage) => {
     await cartAPI.updateGift({ giftWrapping, giftMessage, sessionId: getSessionId() });
     await fetchCart();
@@ -59,7 +64,7 @@ export const CartProvider = ({ children }) => {
   return (
     <CartContext.Provider value={{
       cart, prices, loading, cartCount, fetchCart,
-      addToCart, updateQuantity, removeItem, applyCoupon, updateGift,
+      addToCart, updateQuantity, removeItem, applyCoupon, removeCoupon, updateGift,
     }}>
       {children}
     </CartContext.Provider>

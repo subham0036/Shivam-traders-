@@ -10,11 +10,17 @@ import { showToast } from '../../components/common/Toast';
 import './Checkout.css';
 
 const Checkout = () => {
-  const { cart, prices } = useCart();
+  const { cart, prices, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
   const [upiSettings, setUpiSettings] = useState(null);
+
+  useEffect(() => {
+    if (cart.coupon?.code) setCouponCode(cart.coupon.code);
+  }, [cart.coupon?.code]);
 
   useEffect(() => {
     adminAPI.getSettings().then(({ data }) => setUpiSettings(data.data)).catch(() => {});
@@ -35,6 +41,33 @@ const Checkout = () => {
   });
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleCoupon = async (e) => {
+    e.preventDefault();
+    if (!couponCode.trim()) return showToast('Enter a coupon code');
+    setCouponLoading(true);
+    try {
+      await applyCoupon(couponCode.trim());
+      showToast('Coupon applied!');
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Invalid coupon');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const handleRemoveCoupon = async () => {
+    setCouponLoading(true);
+    try {
+      await removeCoupon();
+      setCouponCode('');
+      showToast('Coupon removed');
+    } catch {
+      showToast('Could not remove coupon');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -160,6 +193,29 @@ const Checkout = () => {
 
               <section className="checkout-section">
                 <h3>Payment Method</h3>
+                <div className="checkout-coupon">
+                  <label className="checkout-coupon-label">Have a coupon?</label>
+                  {cart.coupon?.code ? (
+                    <div className="checkout-coupon-applied">
+                      <span>Applied: <strong>{cart.coupon.code}</strong></span>
+                      <button type="button" className="btn btn-outline btn-sm" onClick={handleRemoveCoupon} disabled={couponLoading}>
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleCoupon} className="checkout-coupon-form">
+                      <input
+                        className="form-control"
+                        placeholder="Enter coupon code"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                      />
+                      <button type="submit" className="btn btn-outline btn-sm" disabled={couponLoading}>
+                        {couponLoading ? 'Applying...' : 'Apply'}
+                      </button>
+                    </form>
+                  )}
+                </div>
                 <p className="form-hint">Pay via UPI — scan the QR code and upload your payment screenshot on the next page.</p>
                 <UpiPaymentBox
                   amount={prices.totalPrice}
@@ -180,7 +236,16 @@ const Checkout = () => {
                 </div>
               ))}
               <div className="summary-row"><span>Subtotal</span><span>{formatPrice(prices.itemsPrice)}</span></div>
+              {prices.couponDiscount > 0 && (
+                <div className="summary-row discount">
+                  <span>Coupon ({cart.coupon?.code})</span>
+                  <span>-{formatPrice(prices.couponDiscount)}</span>
+                </div>
+              )}
               <div className="summary-row"><span>Shipping</span><span>{prices.shippingPrice === 0 ? 'FREE' : formatPrice(prices.shippingPrice)}</span></div>
+              {prices.giftWrappingCharge > 0 && (
+                <div className="summary-row"><span>Gift Wrapping</span><span>{formatPrice(prices.giftWrappingCharge)}</span></div>
+              )}
               <div className="summary-row total"><span>Total</span><span>{formatPrice(prices.totalPrice)}</span></div>
               <button type="submit" className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: 20 }} disabled={loading}>
                 {loading ? 'Processing...' : 'Place Order — Pay on Next Step'}

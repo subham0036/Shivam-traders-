@@ -96,6 +96,15 @@ export const applyCoupon = async (req, res) => {
   res.json({ success: true, data: coupon, message: 'Coupon applied' });
 };
 
+// @desc    Remove coupon
+// @route   DELETE /api/cart/coupon
+export const removeCoupon = async (req, res) => {
+  const cart = await getOrCreateCart(req.user?._id, req.query.sessionId);
+  cart.coupon = null;
+  await cart.save();
+  res.json({ success: true, message: 'Coupon removed' });
+};
+
 // @desc    Update gift wrapping
 // @route   PUT /api/cart/gift
 export const updateGiftWrapping = async (req, res) => {
