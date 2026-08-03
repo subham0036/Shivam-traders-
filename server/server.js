@@ -42,6 +42,11 @@ await fs.mkdir(path.join(__dirname, 'uploads'), { recursive: true });
 
 const app = express();
 
+// Render/Vercel sit behind a reverse proxy — required for express-rate-limit client IPs
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 const normalizeOrigin = (origin) => (origin || '').replace(/\/$/, '');
