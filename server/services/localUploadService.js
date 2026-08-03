@@ -15,7 +15,11 @@ export const saveLocalFile = async (file, folder = 'products') => {
   await fs.writeFile(path.join(dir, filename), file.buffer);
 
   const port = process.env.PORT || 5002;
-  const baseUrl = process.env.SERVER_URL || `http://localhost:${port}`;
+  const baseUrl = (process.env.SERVER_URL || `http://localhost:${port}`).replace(/\/$/, '');
+
+  if (process.env.NODE_ENV === 'production' && !process.env.SERVER_URL) {
+    console.warn('SERVER_URL is not set — uploaded image links may be wrong in production.');
+  }
   return {
     url: `${baseUrl}/uploads/${folder}/${filename}`,
     publicId: null,

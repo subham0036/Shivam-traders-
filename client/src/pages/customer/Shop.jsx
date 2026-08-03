@@ -5,6 +5,7 @@ import SEO from '../../components/common/SEO';
 import ProductCard from '../../components/common/ProductCard';
 import { productAPI } from '../../services';
 import { GODS, MATERIALS } from '../../utils/helpers';
+import { resolveProductImage } from '../../utils/storeImages';
 import './Shop.css';
 
 const Shop = () => {
@@ -193,7 +194,7 @@ const Shop = () => {
         <div className="quick-view-overlay" onClick={() => setQuickView(null)}>
           <div className="quick-view-modal" onClick={(e) => e.stopPropagation()}>
             <button className="close-btn" onClick={() => setQuickView(null)}><FiX /></button>
-            <img src={quickView.images?.[0]?.url} alt={quickView.name} />
+            <img src={resolveProductImage(quickView.images)} alt={quickView.name} />
             <h3>{quickView.name}</h3>
             <p>{quickView.shortDescription || quickView.description?.slice(0, 150)}</p>
             <a href={`/product/${quickView.slug}`} className="btn btn-primary">View Details</a>

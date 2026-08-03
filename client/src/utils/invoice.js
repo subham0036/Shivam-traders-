@@ -1,12 +1,7 @@
 import { STORE } from './storeInfo';
+import { resolveMediaUrl } from './storeImages';
 
-export const resolveMediaUrl = (url) => {
-  if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
-  const serverBase = apiBase.replace(/\/api\/?$/, '');
-  return `${serverBase}${url.startsWith('/') ? url : `/${url}`}`;
-};
+export { resolveMediaUrl };
 
 export const getStoreDetails = (settings) => ({
   name: settings?.siteName || STORE.name,

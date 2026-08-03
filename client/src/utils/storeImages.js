@@ -39,8 +39,75 @@ export const isPlaceholderImage = (url) => {
   return /picsum\.photos|placeholder|seed\/st\d/i.test(url);
 };
 
-export const resolveProductImage = (url, index = 0) => {
-  if (url && !isPlaceholderImage(url)) return url;
+export const isLocalMediaUrl = (url) =>
+  /^https?:\/\/(localhost|127\.0\.0\.1):\d+/i.test(url || '');
+
+export const isLiveSite = () =>
+  typeof window !== 'undefined' && !/localhost|127\.0\.0\.1/.test(window.location.hostname);
+
+export const getServerBase = () => {
+  const api = import.meta.env.VITE_API_URL || '';
+  if (api.startsWith('http')) return api.replace(/\/api\/?$/, '');
+  if (typeof window !== 'undefined') return window.location.origin;
+  return 'http://localhost:5002';
+};
+
+export const resolveMediaUrl = (url) => {
+  if (!url) return '';
+  if (isLocalMediaUrl(url)) {
+    const path = url.replace(/^https?:\/\/[^/]+/, '');
+    return `${getServerBase()}${path}`;
+  }
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  return `${getServerBase()}${url.startsWith('/') ? url : `/${url}`}`;
+};
+
+export const pickProductImageUrl = (images = [], fallbackIndex = 0) => {
+  const urls = (images || []).map((img) => img?.url).filter(Boolean);
+
+  if (isLiveSite()) {
+    const remote = urls.find(
+      (url) => /^https:\/\//.test(url) && !isLocalMediaUrl(url) && !isPlaceholderImage(url),
+    );
+    if (remote) return remote;
+  }
+
+  for (const url of urls) {
+    const resolved = resolveMediaUrl(url);
+    if (resolved && !isPlaceholderImage(resolved)) {
+      if (isLiveSite() && isLocalMediaUrl(resolved)) continue;
+      return resolved;
+    }
+  }
+
+  return PRODUCT_PLACEHOLDERS[fallbackIndex % PRODUCT_PLACEHOLDERS.length];
+};
+
+export const resolveProductImages = (images = [], fallbackIndex = 0) => {
+  const resolved = (images || [])
+    .map((img) => ({ ...img, url: resolveMediaUrl(img?.url) }))
+    .filter((img) => img.url && !isPlaceholderImage(img.url))
+    .filter((img) => !(isLiveSite() && isLocalMediaUrl(img.url)));
+
+  if (resolved.length) return resolved;
+
+  return [{ url: PRODUCT_PLACEHOLDERS[fallbackIndex % PRODUCT_PLACEHOLDERS.length], alt: 'Product' }];
+};
+
+export const resolveProductImage = (urlOrImages, index = 0) => {
+  if (Array.isArray(urlOrImages)) {
+    return pickProductImageUrl(urlOrImages, index);
+  }
+  if (urlOrImages && typeof urlOrImages === 'object' && urlOrImages.url) {
+    return pickProductImageUrl([urlOrImages], index);
+  }
+  const url = urlOrImages;
+  if (url && !isPlaceholderImage(url)) {
+    if (isLiveSite() && isLocalMediaUrl(url)) {
+      return PRODUCT_PLACEHOLDERS[index % PRODUCT_PLACEHOLDERS.length];
+    }
+    return resolveMediaUrl(url);
+  }
   return PRODUCT_PLACEHOLDERS[index % PRODUCT_PLACEHOLDERS.length];
 };
 

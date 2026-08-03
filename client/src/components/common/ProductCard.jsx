@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiHeart, FiShoppingBag, FiStar } from 'react-icons/fi';
 import { formatPrice, getDiscountPercent } from '../../utils/helpers';
-import { resolveProductImage } from '../../utils/storeImages';
+import { resolveProductImage, PRODUCT_PLACEHOLDERS } from '../../utils/storeImages';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { wishlistAPI } from '../../services';
@@ -14,7 +14,8 @@ const ProductCard = ({ product, onQuickView }) => {
   const { user } = useAuth();
 
   const discount = product.discount || getDiscountPercent(product.mrp, product.sellingPrice);
-  const image = resolveProductImage(product.images?.[0]?.url, product.name?.length || 0);
+  const fallbackImage = PRODUCT_PLACEHOLDERS[(product.name?.length || 0) % PRODUCT_PLACEHOLDERS.length];
+  const image = resolveProductImage(product.images, product.name?.length || 0);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -45,7 +46,15 @@ const ProductCard = ({ product, onQuickView }) => {
     >
       <Link to={`/product/${product.slug}`} className="product-card-link">
         <div className="product-card-image">
-          <img src={image} alt={product.images?.[0]?.alt || product.name} loading="lazy" />
+          <img
+            src={image}
+            alt={product.images?.[0]?.alt || product.name}
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = fallbackImage;
+            }}
+          />
           <div className="product-badges">
             {product.isBestSeller && <span className="badge badge-gold">Best Seller</span>}
             {product.isTrending && <span className="badge badge-saffron">Trending</span>}

@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { authAPI, orderAPI, wishlistAPI } from '../../services';
 import { formatPrice, ORDER_STATUS } from '../../utils/helpers';
 import { openInvoicePrint } from '../../utils/invoice';
+import { resolveProductImage } from '../../utils/storeImages';
 import { showToast } from '../../components/common/Toast';
 import '../customer/Auth.css';
 
@@ -98,7 +99,7 @@ const Profile = () => {
                   <div className="grid-3">
                     {wishlist.map((p) => (
                       <Link key={p._id} to={`/product/${p.slug}`} className="wishlist-item">
-                        <img src={p.images?.[0]?.url} alt={p.name} />
+                        <img src={resolveProductImage(p.images)} alt={p.name} />
                         <h4>{p.name}</h4>
                         <p>{formatPrice(p.sellingPrice)}</p>
                       </Link>

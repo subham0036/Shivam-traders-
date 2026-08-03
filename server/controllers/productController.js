@@ -3,6 +3,7 @@ import Product from '../models/Product.js';
 import Inventory from '../models/Inventory.js';
 import { paginate } from '../utils/helpers.js';
 import { uploadImages, uploadSingleMedia, deleteMedia } from '../utils/uploadHelper.js';
+import { normalizeProductMedia, normalizeProductsMedia } from '../utils/normalizeMedia.js';
 
 const buildProductFilter = (query) => {
   const filter = { isActive: true };
@@ -52,7 +53,7 @@ export const getProducts = async (req, res) => {
 
   res.json({
     success: true,
-    data: products,
+    data: normalizeProductsMedia(products),
     pagination: { page, limit, total, pages: Math.ceil(total / limit) },
   });
 };
@@ -74,7 +75,13 @@ export const getProduct = async (req, res) => {
     $or: [{ category: product.category }, { godName: product.godName }],
   }).limit(8).select('name slug sellingPrice mrp images rating discount stock');
 
-  res.json({ success: true, data: { ...product.toObject(), suggestedRelated: related } });
+  res.json({
+    success: true,
+    data: {
+      ...normalizeProductMedia(product.toObject()),
+      suggestedRelated: normalizeProductsMedia(related),
+    },
+  });
 };
 
 const parseFormData = (body) => {
@@ -178,7 +185,7 @@ export const adminGetProducts = async (req, res) => {
   const total = await Product.countDocuments(filter);
   const { query, page, limit } = paginate(Product.find(filter).populate('category', 'name'), req.query.page, req.query.limit || 20);
   const products = await query.sort({ createdAt: -1 });
-  res.json({ success: true, data: products, pagination: { page, limit, total, pages: Math.ceil(total / limit) } });
+  res.json({ success: true, data: normalizeProductsMedia(products), pagination: { page, limit, total, pages: Math.ceil(total / limit) } });
 };
 
 // @desc    Check pincode delivery

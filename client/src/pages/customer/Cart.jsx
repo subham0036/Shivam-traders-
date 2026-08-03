@@ -5,6 +5,7 @@ import SEO from '../../components/common/SEO';
 import { useCart } from '../../context/CartContext';
 import { formatPrice } from '../../utils/helpers';
 import { showToast } from '../../components/common/Toast';
+import { resolveProductImage } from '../../utils/storeImages';
 import './Cart.css';
 
 const Cart = () => {
@@ -65,7 +66,7 @@ const Cart = () => {
 
                 {cart.items.map((item) => (
                   <div key={item.product._id} className="cart-item">
-                    <img src={item.product.images?.[0]?.url} alt={item.product.name} />
+                    <img src={resolveProductImage(item.product.images)} alt={item.product.name} />
                     <div className="item-info">
                       <Link to={`/product/${item.product.slug}`}><h3>{item.product.name}</h3></Link>
                       <p>{formatPrice(item.product.sellingPrice)}</p>

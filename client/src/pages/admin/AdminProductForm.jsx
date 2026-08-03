@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { productAPI, categoryAPI } from '../../services';
 import { GODS, MATERIALS } from '../../utils/helpers';
-import { resolveMediaUrl } from '../../utils/invoice';
+import { resolveMediaUrl } from '../../utils/storeImages';
 import { showToast } from '../../components/common/Toast';
 
 const emptyForm = {

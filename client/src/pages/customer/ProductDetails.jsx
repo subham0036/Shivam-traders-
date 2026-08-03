@@ -11,6 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import { formatPrice, getDiscountPercent, shareProduct } from '../../utils/helpers';
 import { STORE } from '../../utils/storeInfo';
 import { showToast } from '../../components/common/Toast';
+import { resolveProductImages } from '../../utils/storeImages';
 import './ProductDetails.css';
 
 const ProductDetails = () => {
@@ -29,6 +30,7 @@ const ProductDetails = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchProduct = async () => {
       const { data } = await productAPI.getBySlug(slug);
       setProduct(data.data);
@@ -45,7 +47,7 @@ const ProductDetails = () => {
   if (!product) return <div className="loading-spinner" />;
 
   const discount = product.discount || getDiscountPercent(product.mrp, product.sellingPrice);
-  const images = product.images?.length ? product.images : [{ url: 'https://picsum.photos/600/800' }];
+  const images = resolveProductImages(product.images);
 
   const handleAddToCart = async () => {
     await addToCart(product._id, quantity);

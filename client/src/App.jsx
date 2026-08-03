@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
+import ScrollToTop from './components/common/ScrollToTop';
 import './layouts/MainLayout.css';
 
 const Home = lazy(() => import('./pages/customer/Home'));
@@ -29,7 +30,9 @@ const Loading = () => <div className="loading-spinner" />;
 
 function App() {
   return (
-    <Suspense fallback={<Loading />}>
+    <>
+      <ScrollToTop />
+      <Suspense fallback={<Loading />}>
       <Routes>
         <Route element={<MainLayout />}>
           <Route index element={<Home />} />
@@ -65,6 +68,7 @@ function App() {
         } />
       </Routes>
     </Suspense>
+    </>
   );
 }
 
