@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SEO from '../../components/common/SEO';
-import UpiPaymentBox, { UPI_DEFAULTS } from '../../components/common/UpiPaymentBox';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
-import { orderAPI, adminAPI } from '../../services';
+import { orderAPI } from '../../services';
 import { formatPrice } from '../../utils/helpers';
 import { showToast } from '../../components/common/Toast';
 import './Checkout.css';
@@ -16,15 +15,10 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
-  const [upiSettings, setUpiSettings] = useState(null);
 
   useEffect(() => {
     if (cart.coupon?.code) setCouponCode(cart.coupon.code);
   }, [cart.coupon?.code]);
-
-  useEffect(() => {
-    adminAPI.getSettings().then(({ data }) => setUpiSettings(data.data)).catch(() => {});
-  }, []);
 
   const [form, setForm] = useState({
     fullName: user?.name || '',
@@ -216,14 +210,7 @@ const Checkout = () => {
                     </form>
                   )}
                 </div>
-                <p className="form-hint">Pay via UPI — scan the QR code and upload your payment screenshot on the next page.</p>
-                <UpiPaymentBox
-                  amount={prices.totalPrice}
-                  upiId={upiSettings?.payment?.upiId || UPI_DEFAULTS.upiId}
-                  upiName={upiSettings?.payment?.upiName || UPI_DEFAULTS.upiName}
-                  orderNote="Shivam Traders Order"
-                  compact
-                />
+                <p className="form-hint">Pay via UPI after placing your order — QR code and payment details will appear on the next page.</p>
               </section>
             </div>
 
@@ -243,12 +230,9 @@ const Checkout = () => {
                 </div>
               )}
               <div className="summary-row"><span>Shipping</span><span>{prices.shippingPrice === 0 ? 'FREE' : formatPrice(prices.shippingPrice)}</span></div>
-              {prices.giftWrappingCharge > 0 && (
-                <div className="summary-row"><span>Gift Wrapping</span><span>{formatPrice(prices.giftWrappingCharge)}</span></div>
-              )}
               <div className="summary-row total"><span>Total</span><span>{formatPrice(prices.totalPrice)}</span></div>
               <button type="submit" className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: 20 }} disabled={loading}>
-                {loading ? 'Processing...' : 'Place Order — Pay on Next Step'}
+                {loading ? 'Processing...' : 'Place Order'}
               </button>
             </div>
           </form>

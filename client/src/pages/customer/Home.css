@@ -5,6 +5,24 @@
   border-bottom: 1px solid var(--border-gold);
 }
 
+.hero-store-compact .hero-store-inner {
+  grid-template-columns: 1fr;
+  text-align: center;
+}
+
+.hero-store-compact .hero-store-copy {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.hero-store-compact .hero-store-cta {
+  margin: 0 auto;
+}
+
+.home-premium-section .hero-showcase {
+  margin-top: 8px;
+}
+
 .hero-store-inner {
   display: grid;
   grid-template-columns: minmax(0, 340px) 1fr;

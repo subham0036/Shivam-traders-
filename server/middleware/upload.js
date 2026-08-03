@@ -27,6 +27,9 @@ export const uploadFields = upload.fields([
   { name: 'avatar', maxCount: 1 },
   { name: 'screenshot', maxCount: 1 },
   { name: 'qrCode', maxCount: 1 },
+  { name: 'showcase0', maxCount: 1 },
+  { name: 'showcase1', maxCount: 1 },
+  { name: 'showcase2', maxCount: 1 },
 ]);
 
 export const handleUpload = (req, res, next) => {

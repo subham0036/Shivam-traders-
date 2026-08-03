@@ -24,7 +24,7 @@ const settingsSchema = new mongoose.Schema(
       standardShippingCharge: { type: Number, default: 99 },
       expressShippingCharge: { type: Number, default: 199 },
       gstRate: { type: Number, default: 18 },
-      giftWrappingCharge: { type: Number, default: 50 },
+      giftWrappingCharge: { type: Number, default: 0 },
     },
     banners: [{
       title: String,
@@ -74,6 +74,12 @@ const settingsSchema = new mongoose.Schema(
     analytics: {
       facebookPixelId: String,
     },
+    homeShowcase: [{
+      label: String,
+      alt: String,
+      link: { type: String, default: '/shop' },
+      image: { url: String, publicId: String },
+    }],
   },
   { timestamps: true }
 );

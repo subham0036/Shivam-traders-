@@ -384,6 +384,22 @@
 
 .admin-form-stack h3 { margin-bottom: 4px; }
 
+.admin-showcase-card {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-showcase-card h4 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--maroon-dark);
+}
+
 /* ── Order detail ── */
 .admin-detail-grid {
   display: grid;

@@ -9,9 +9,9 @@ export const MURTI_IMAGES = {
 };
 
 export const HERO_SHOWCASE = [
-  { src: MURTI_IMAGES.ganeshaStatue, alt: 'Brass Ganesha murti', label: 'गणेश' },
-  { src: MURTI_IMAGES.ganeshaFlowers, alt: 'Ganesha idol with flowers', label: 'विशेष संग्रह' },
-  { src: MURTI_IMAGES.templeDiyas, alt: 'Temple diyas and puja', label: 'पूजा सामग्री' },
+  { src: MURTI_IMAGES.ganeshaStatue, alt: 'Brass Ganesha murti', label: 'गणेश', link: '/shop' },
+  { src: MURTI_IMAGES.ganeshaFlowers, alt: 'Ganesha idol with flowers', label: 'विशेष संग्रह', link: '/shop' },
+  { src: MURTI_IMAGES.ganeshaFigurine, alt: 'Premium handcrafted murti', label: 'प्रीमियम मूर्ति', link: '/shop' },
 ];
 
 export const PRODUCT_PLACEHOLDERS = [

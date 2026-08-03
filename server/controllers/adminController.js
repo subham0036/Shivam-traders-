@@ -243,12 +243,18 @@ export const updateSettings = async (req, res) => {
   if (typeof body.invoice === 'string') {
     try { body.invoice = JSON.parse(body.invoice); } catch { /* keep string */ }
   }
+  if (typeof body.homeShowcase === 'string') {
+    try { body.homeShowcase = JSON.parse(body.homeShowcase); } catch { /* keep string */ }
+  }
 
   const nestedKeys = ['contact', 'social', 'shipping', 'seo', 'payment', 'invoice', 'policies', 'analytics', 'flashSale', 'exitIntentCoupon'];
   for (const [key, val] of Object.entries(body)) {
     if (nestedKeys.includes(key) && val && typeof val === 'object') {
       settings[key] = { ...(settings[key]?.toObject?.() || settings[key] || {}), ...val };
       settings.markModified(key);
+    } else if (key === 'homeShowcase' && Array.isArray(val)) {
+      settings.homeShowcase = val;
+      settings.markModified('homeShowcase');
     } else if (key !== 'banners') {
       settings[key] = val;
     }
@@ -264,6 +270,29 @@ export const updateSettings = async (req, res) => {
     settings.payment = { ...(settings.payment?.toObject?.() || settings.payment || {}) };
     settings.payment.upiQrCode = await saveLocalFile(req.files.qrCode[0], 'settings');
     settings.markModified('payment');
+  }
+  if (Array.isArray(body.homeShowcase)) {
+    const showcase = body.homeShowcase.map((item, i) => {
+      const existing = settings.homeShowcase?.[i]?.image;
+      const next = { ...item };
+      const file = req.files?.[`showcase${i}`]?.[0];
+      if (file) {
+        next.image = { url: undefined, publicId: undefined };
+      } else if (item.image?.url) {
+        next.image = item.image;
+      } else if (existing?.url) {
+        next.image = existing;
+      }
+      return next;
+    });
+    for (let i = 0; i < showcase.length; i++) {
+      const file = req.files?.[`showcase${i}`]?.[0];
+      if (file) {
+        showcase[i].image = await saveLocalFile(file, 'settings');
+      }
+    }
+    settings.homeShowcase = showcase;
+    settings.markModified('homeShowcase');
   }
   await settings.save();
   res.json({ success: true, data: settings });

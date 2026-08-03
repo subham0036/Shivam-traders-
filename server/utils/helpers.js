@@ -37,7 +37,7 @@ export const calcPrices = (items, shipping = {}, coupon = null, giftWrapping = f
     couponDiscount = Math.min(couponDiscount, itemsPrice);
   }
 
-  const giftWrappingCharge = giftWrapping ? (shipping.giftWrappingCharge || 50) : 0;
+  const giftWrappingCharge = 0;
   const subtotal = itemsPrice - couponDiscount;
   const shippingPrice = subtotal >= (shipping.freeShippingThreshold || 499)
     ? 0

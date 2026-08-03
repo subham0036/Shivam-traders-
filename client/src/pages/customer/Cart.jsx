@@ -105,7 +105,7 @@ const Cart = () => {
                   </form>
                   <label className="gift-wrap">
                     <input type="checkbox" checked={giftWrap} onChange={(e) => handleGift(e.target.checked)} />
-                    <FiGift /> Gift Wrapping (+₹50)
+                    <FiGift /> Gift Wrapping (Free)
                   </label>
                   {giftWrap && (
                     <input className="form-control" placeholder="Gift message (optional)" value={giftMessage} onChange={(e) => setGiftMessage(e.target.value)} onBlur={() => updateGift(true, giftMessage)} />
