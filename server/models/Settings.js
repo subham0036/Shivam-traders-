@@ -80,6 +80,7 @@ const settingsSchema = new mongoose.Schema(
       link: { type: String, default: '/shop' },
       image: { url: String, publicId: String },
     }],
+    homeShowcaseTitle: { type: String, default: 'Premium Murtis' },
   },
   { timestamps: true }
 );

@@ -298,6 +298,54 @@ export const updateSettings = async (req, res) => {
   res.json({ success: true, data: settings });
 };
 
+export const updateHomeShowcase = async (req, res) => {
+  let settings = await Settings.findOne();
+  if (!settings) settings = await Settings.create({});
+
+  let items = req.body.homeShowcase;
+  if (typeof items === 'string') {
+    try { items = JSON.parse(items); } catch {
+      return res.status(400).json({ success: false, message: 'Invalid showcase data' });
+    }
+  }
+  if (!Array.isArray(items)) {
+    return res.status(400).json({ success: false, message: 'Showcase must be an array' });
+  }
+
+  const existing = settings.homeShowcase || [];
+  const showcase = [];
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const file = req.files?.[`showcase${i}`]?.[0];
+    let image = existing[i]?.image;
+    if (file) {
+      image = await saveLocalFile(file, 'settings');
+    } else if (item.image?.url) {
+      image = { url: item.image.url, publicId: item.image.publicId || '' };
+    }
+    showcase.push({
+      label: item.label || '',
+      alt: item.alt || '',
+      link: item.link || '/shop',
+      image,
+    });
+  }
+
+  settings.homeShowcase = showcase;
+  if (req.body.sectionTitle !== undefined) {
+    settings.homeShowcaseTitle = req.body.sectionTitle;
+  }
+  settings.markModified('homeShowcase');
+  await settings.save();
+  res.json({
+    success: true,
+    data: {
+      homeShowcase: settings.homeShowcase,
+      homeShowcaseTitle: settings.homeShowcaseTitle,
+    },
+  });
+};
+
 export const addBanner = async (req, res) => {
   const settings = await Settings.findOne() || await Settings.create({});
   const banner = { ...req.body };

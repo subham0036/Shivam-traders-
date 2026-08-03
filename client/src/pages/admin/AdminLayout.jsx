@@ -22,6 +22,7 @@ const SIDEBAR_LINKS = [
   { to: '/admin/reviews', label: 'Reviews', adminOnly: false },
   { to: '/admin/analytics', label: 'Analytics', adminOnly: true },
   { to: '/admin/content', label: 'Website Content', adminOnly: true },
+  { to: '/admin/premium-murtis', label: 'Premium Murtis', adminOnly: true },
   { to: '/admin/settings', label: 'Settings', adminOnly: true },
   { to: '/admin/users', label: 'Admin Users', adminOnly: true },
 ];
@@ -39,6 +40,7 @@ const BREADCRUMB_LABELS = {
   reviews: 'Reviews',
   analytics: 'Analytics',
   content: 'Website Content',
+  'premium-murtis': 'Premium Murtis',
   settings: 'Settings',
   users: 'Admin Users',
   new: 'Add Product',

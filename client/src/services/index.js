@@ -86,6 +86,7 @@ export const adminAPI = {
   deleteCoupon: (id) => API.delete(`/admin/coupons/${id}`),
   getSettings: () => API.get('/admin/settings'),
   updateSettings: (data) => API.put('/admin/settings', data),
+  updateHomeShowcase: (data) => API.put('/admin/home-showcase', data),
   addBanner: (data) => API.post('/admin/banners', data),
   subscribeNewsletter: (data) => API.post('/admin/newsletter', data),
   submitContact: (data) => API.post('/admin/contact', data),

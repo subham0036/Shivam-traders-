@@ -22,6 +22,7 @@ const Home = () => {
   const [bestSellers, setBestSellers] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
   const [premiumShowcase, setPremiumShowcase] = useState(HERO_SHOWCASE);
+  const [premiumTitle, setPremiumTitle] = useState('Premium Murtis');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,8 +37,12 @@ const Home = () => {
         setProducts(all.data.data);
         setBestSellers(best.data.data);
         setNewArrivals(newest.data.data);
-        if (settingsRes?.data?.data?.homeShowcase?.length) {
-          setPremiumShowcase(mapShowcaseFromSettings(settingsRes.data.data.homeShowcase));
+        if (settingsRes?.data?.data) {
+          const s = settingsRes.data.data;
+          if (s.homeShowcaseTitle) setPremiumTitle(s.homeShowcaseTitle);
+          if (s.homeShowcase?.length) {
+            setPremiumShowcase(mapShowcaseFromSettings(s.homeShowcase));
+          }
         }
       } catch (err) {
         console.error(err);
@@ -88,7 +93,7 @@ const Home = () => {
       <section className="home-products-section home-products-section-alt home-premium-section">
         <div className="container">
           <div className="home-section-head">
-            <h2>Premium Murtis</h2>
+            <h2>{premiumTitle}</h2>
             <Link to="/shop?premium=true" className="home-see-all">See all →</Link>
           </div>
           <div className="hero-showcase">

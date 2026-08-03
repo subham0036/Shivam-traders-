@@ -15,6 +15,7 @@ import Reviews from './pages/Reviews';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Content from './pages/Content';
+import PremiumMurtis from './pages/PremiumMurtis';
 import Users from './pages/Users';
 
 const AdminPanel = () => (
@@ -35,6 +36,7 @@ const AdminPanel = () => (
       <Route path="reviews" element={<Reviews />} />
       <Route path="analytics" element={<Analytics />} />
       <Route path="content" element={<Content />} />
+      <Route path="premium-murtis" element={<PremiumMurtis />} />
       <Route path="settings" element={<Settings />} />
       <Route path="users" element={<Users />} />
     </Routes>

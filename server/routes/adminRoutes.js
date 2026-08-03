@@ -5,7 +5,7 @@ import {
   getDashboard, getCustomers, toggleBlockCustomer, createStaff, getStaffUsers, getAnalytics,
   getInventory, stockIn, stockOut, getCoupons, createCoupon,
   updateCoupon, deleteCoupon, getNewsletterSubscribers, subscribeNewsletter,
-  getSettings, updateSettings, addBanner, submitContact,
+  getSettings, updateSettings, updateHomeShowcase, addBanner, submitContact,
 } from '../controllers/adminController.js';
 
 const router = Router();
@@ -32,6 +32,7 @@ router.delete('/coupons/:id', protect, authorize('admin'), deleteCoupon);
 
 router.get('/newsletter', protect, authorize('admin'), getNewsletterSubscribers);
 router.put('/settings', protect, authorize('admin'), uploadFields, updateSettings);
+router.put('/home-showcase', protect, authorize('admin'), uploadFields, updateHomeShowcase);
 router.post('/banners', protect, authorize('admin'), upload.single('image'), addBanner);
 
 export default router;
