@@ -80,6 +80,22 @@
 
 .summary-item span:first-child { flex: 1; }
 
+.checkout-login-banner {
+  background: linear-gradient(135deg, rgba(255, 153, 51, 0.08), rgba(212, 175, 55, 0.1));
+  border-color: var(--saffron) !important;
+}
+
+.checkout-login-banner p {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.checkout-login-banner a {
+  color: var(--saffron);
+  font-weight: 700;
+}
+
 @media (max-width: 768px) {
   .checkout-layout { grid-template-columns: 1fr; }
   .checkout-summary { position: static; order: -1; margin-bottom: 8px; }

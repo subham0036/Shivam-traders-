@@ -8,6 +8,7 @@ import ProductCard from '../../components/common/ProductCard';
 import { productAPI, reviewAPI, wishlistAPI } from '../../services';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { useLoginPrompt } from '../../context/LoginPromptContext';
 import { formatPrice, getDiscountPercent, shareProduct } from '../../utils/helpers';
 import { STORE } from '../../utils/storeInfo';
 import { showToast } from '../../components/common/Toast';
@@ -27,6 +28,7 @@ const ProductDetails = () => {
   const [newQuestion, setNewQuestion] = useState('');
   const { addToCart } = useCart();
   const { user } = useAuth();
+  const { promptLogin } = useLoginPrompt();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,7 +58,14 @@ const ProductDetails = () => {
 
   const handleBuyNow = async () => {
     await addToCart(product._id, quantity);
-    navigate('/checkout');
+    if (user) {
+      navigate('/checkout');
+      return;
+    }
+    promptLogin({
+      reason: 'buy',
+      onContinue: () => navigate('/checkout'),
+    });
   };
 
   const handleWishlist = async () => {

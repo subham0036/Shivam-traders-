@@ -1,0 +1,92 @@
+.login-prompt-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(44, 24, 16, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+.login-prompt-modal {
+  position: relative;
+  width: min(420px, 100%);
+  max-height: min(90dvh, 640px);
+  overflow-y: auto;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-gold);
+  box-shadow: var(--shadow-lg);
+  padding: clamp(24px, 5vw, 32px);
+  text-align: center;
+}
+
+.login-prompt-modal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--saffron), var(--gold), var(--saffron));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.login-prompt-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 22px;
+  color: var(--maroon-dark);
+  padding: 6px;
+  border-radius: 50%;
+}
+
+.login-prompt-om {
+  display: block;
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.login-prompt-modal h2 {
+  font-size: clamp(20px, 5vw, 26px);
+  margin-bottom: 10px;
+  color: var(--maroon-dark);
+}
+
+.login-prompt-modal > p {
+  color: var(--text-light);
+  font-size: clamp(14px, 3.5vw, 15px);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.login-prompt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-prompt-actions .btn {
+  width: 100%;
+  white-space: normal;
+}
+
+.login-prompt-dismiss {
+  font-size: 14px;
+  color: var(--text-light);
+  padding: 8px;
+  text-decoration: underline;
+}
+
+.login-prompt-admin {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.login-prompt-admin a {
+  color: var(--maroon);
+  font-weight: 700;
+}

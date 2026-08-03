@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SEO from '../../components/common/SEO';
 import UpiPaymentBox, { UPI_DEFAULTS } from '../../components/common/UpiPaymentBox';
 import { useCart } from '../../context/CartContext';
@@ -86,6 +86,20 @@ const Checkout = () => {
         <div className="container">
           <form onSubmit={handleSubmit} className="checkout-layout">
             <div className="checkout-form">
+              {!user && (
+                <section className="checkout-section checkout-login-banner">
+                  <h3>Login recommended</h3>
+                  <p>
+                    Sign in to track your order and save your details for next time.
+                    {' '}
+                    <Link to="/login">Customer Login</Link>
+                    {' · '}
+                    <Link to="/register">Register</Link>
+                    {' · '}
+                    <Link to="/login">Admin Login</Link>
+                  </p>
+                </section>
+              )}
               {!user && (
                 <section className="checkout-section">
                   <h3>Guest Checkout</h3>

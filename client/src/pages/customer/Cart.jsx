@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiTrash2, FiGift } from 'react-icons/fi';
 import SEO from '../../components/common/SEO';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
+import { useLoginPrompt } from '../../context/LoginPromptContext';
 import { formatPrice } from '../../utils/helpers';
 import { showToast } from '../../components/common/Toast';
 import { resolveProductImage } from '../../utils/storeImages';
@@ -10,6 +12,9 @@ import './Cart.css';
 
 const Cart = () => {
   const { cart, prices, updateQuantity, removeItem, applyCoupon, updateGift, loading } = useCart();
+  const { user } = useAuth();
+  const { promptLogin } = useLoginPrompt();
+  const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState('');
   const [giftWrap, setGiftWrap] = useState(cart.giftWrapping || false);
   const [giftMessage, setGiftMessage] = useState(cart.giftMessage || '');
@@ -32,6 +37,18 @@ const Cart = () => {
   const freeShippingThreshold = 2000;
   const subtotal = prices.itemsPrice || 0;
   const shippingProgress = Math.min(100, (subtotal / freeShippingThreshold) * 100);
+
+  const handleCheckout = (e) => {
+    e.preventDefault();
+    if (user) {
+      navigate('/checkout');
+      return;
+    }
+    promptLogin({
+      reason: 'checkout',
+      onContinue: () => navigate('/checkout'),
+    });
+  };
 
   if (loading) return <div className="loading-spinner" />;
 
@@ -104,7 +121,14 @@ const Cart = () => {
                 <div className="summary-row"><span>GST (18%)</span><span>{formatPrice(prices.taxPrice)}</span></div>
                 {prices.giftWrappingCharge > 0 && <div className="summary-row"><span>Gift Wrapping</span><span>{formatPrice(prices.giftWrappingCharge)}</span></div>}
                 <div className="summary-row total"><span>Total</span><span>{formatPrice(prices.totalPrice)}</span></div>
-                <Link to="/checkout" className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: 20 }}>Proceed to Checkout</Link>
+                {!user && (
+                  <p className="cart-login-note">
+                    <Link to="/login">Login</Link> for faster checkout and order tracking.
+                  </p>
+                )}
+                <button type="button" className="btn btn-primary btn-lg cart-checkout-btn" onClick={handleCheckout}>
+                  Proceed to Checkout
+                </button>
                 <Link to="/shop" className="continue-link">← Continue Shopping</Link>
               </div>
             </div>

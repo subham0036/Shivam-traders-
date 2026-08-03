@@ -48,7 +48,7 @@ const Header = () => {
     { to: '/contact', label: 'Contact' },
   ];
 
-  const renderNavLinks = (className = '') => (
+  const renderNavLinks = (className = '', { mobile = false } = {}) => (
     <nav className={className}>
       {navLinks.map((link) => (
         <Link
@@ -60,13 +60,27 @@ const Header = () => {
           {link.label}
         </Link>
       ))}
+      {mobile && !user && (
+        <>
+          <div className="nav-mobile-divider" aria-hidden="true" />
+          <Link to="/login" className="nav-auth-link" onClick={closeMenu}>Customer Login</Link>
+          <Link to="/register" className="nav-auth-link" onClick={closeMenu}>Create Account</Link>
+          <Link to="/login" className="nav-admin-login-link" onClick={closeMenu}>Admin Login</Link>
+        </>
+      )}
+      {mobile && user && (
+        <>
+          <div className="nav-mobile-divider" aria-hidden="true" />
+          <Link to="/profile" className="nav-auth-link" onClick={closeMenu}>My Account</Link>
+        </>
+      )}
       {(user?.role === 'admin' || user?.role === 'staff') && (
         <Link
           to={user.role === 'admin' ? '/admin' : '/staff'}
           className="nav-admin-link"
           onClick={closeMenu}
         >
-          {user.role === 'admin' ? 'Admin' : 'Staff'}
+          {user.role === 'admin' ? 'Admin Panel' : 'Staff Panel'}
         </Link>
       )}
     </nav>
@@ -79,7 +93,7 @@ const Header = () => {
         onClick={closeMenu}
         aria-hidden={!menuOpen}
       />
-      {renderNavLinks(`nav nav-mobile ${menuOpen ? 'nav-open' : ''}`)}
+      {renderNavLinks(`nav nav-mobile ${menuOpen ? 'nav-open' : ''}`, { mobile: true })}
     </>,
     document.body,
   );
@@ -123,7 +137,13 @@ const Header = () => {
             <FiShoppingBag />
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </Link>
-          <Link to={user ? '/profile' : '/login'} aria-label="Account"><FiUser /></Link>
+          {user ? (
+            <Link to="/profile" className="header-account-link" aria-label="Account">
+              <FiUser />
+            </Link>
+          ) : (
+            <Link to="/login" className="header-login-btn">Login</Link>
+          )}
         </div>
       </div>
 

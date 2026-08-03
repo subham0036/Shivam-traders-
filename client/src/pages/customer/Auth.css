@@ -68,6 +68,27 @@
 
 .auth-footer a { color: var(--saffron); font-weight: 700; }
 
+.auth-admin-note {
+  text-align: center;
+  font-size: 13px;
+  color: var(--maroon);
+  background: var(--gold-light);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin: -12px 0 clamp(20px, 4vw, 28px);
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .auth-page {
+    min-height: auto;
+    align-items: flex-start;
+    padding-top: 24px;
+    padding-bottom: max(32px, env(safe-area-inset-bottom));
+  }
+}
+
 @media (max-width: 400px) {
-  .auth-card { padding: 28px 20px; }
+  .auth-card { padding: 28px 16px; }
 }
