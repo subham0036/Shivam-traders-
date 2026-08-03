@@ -63,9 +63,8 @@ const Header = () => {
       {mobile && !user && (
         <>
           <div className="nav-mobile-divider" aria-hidden="true" />
-          <Link to="/login" className="nav-auth-link" onClick={closeMenu}>Customer Login</Link>
+          <Link to="/login" className="nav-auth-link" onClick={closeMenu}>Login</Link>
           <Link to="/register" className="nav-auth-link" onClick={closeMenu}>Create Account</Link>
-          <Link to="/login" className="nav-admin-login-link" onClick={closeMenu}>Admin Login</Link>
         </>
       )}
       {mobile && user && (

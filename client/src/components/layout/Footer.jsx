@@ -53,9 +53,8 @@ const Footer = () => {
           <div className="footer-col">
             <h4>Account</h4>
             <ul>
-              <li><Link to="/login">Customer Login</Link></li>
+              <li><Link to="/login">Login</Link></li>
               <li><Link to="/register">Register</Link></li>
-              <li><Link to="/login">Admin Login</Link></li>
               <li><Link to="/profile">My Account</Link></li>
             </ul>
           </div>
