@@ -150,4 +150,10 @@
   .cart-item .item-total { grid-area: total; justify-self: end; align-self: center; }
   .cart-item .remove-btn { grid-area: remove; justify-self: end; }
   .coupon-form .btn { width: 100%; }
+  .order-summary { padding: 18px 16px; }
+}
+
+@media (max-width: 360px) {
+  .cart-item { grid-template-columns: 56px 1fr; }
+  .cart-item img { width: 56px; height: 70px; }
 }

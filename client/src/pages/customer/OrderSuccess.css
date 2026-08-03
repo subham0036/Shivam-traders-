@@ -137,6 +137,9 @@
 @media (max-width: 480px) {
   .order-success-actions { flex-direction: column; align-items: stretch; }
   .order-success-actions .btn { width: 100%; }
-  .upi-qr-block { flex-direction: column; text-align: center; }
-  .upi-id-copy { width: 100%; justify-content: center; }
+  .order-success-card { padding: 20px 16px; }
+  .upi-qr-block { flex-direction: column; text-align: center; align-items: center; }
+  .upi-id-copy { width: 100%; justify-content: center; word-break: break-all; }
+  .upi-details { min-width: 0; width: 100%; }
+  .upi-qr-image { width: min(180px, 70vw); height: min(180px, 70vw); }
 }

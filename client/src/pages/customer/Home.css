@@ -43,8 +43,9 @@
 
 .hero-showcase {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(10px, 2vw, 16px);
+  min-width: 0;
 }
 
 .hero-showcase-card {
@@ -123,18 +124,18 @@
 /* ── Product grids ── */
 .home-product-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(14px, 2.5vw, 22px);
 }
 
 .home-product-grid-compact {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 /* ── Deity image grid ── */
 .deity-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: clamp(10px, 2vw, 16px);
 }
 
@@ -255,18 +256,32 @@
 @media (max-width: 480px) {
   .hero-showcase {
     gap: 8px;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .deity-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
 
   .home-product-grid,
   .home-product-grid-compact {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+  }
+
+  .home-section-head {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .home-see-all {
+    white-space: normal;
+  }
+
+  .hero-store-copy h1 {
+    font-size: clamp(24px, 8vw, 32px);
+    word-break: break-word;
   }
 }
 

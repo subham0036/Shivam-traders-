@@ -516,7 +516,7 @@ html.admin-dark .admin-breadcrumb a,
 .admin-sidebar-backdrop.open { display: block; }
 
 @media (max-width: 900px) {
-  .admin-shell { grid-template-columns: 1fr; }
+  .admin-shell { grid-template-columns: 1fr; overflow-x: hidden; }
 
   .admin-sidebar {
     position: fixed;
@@ -555,6 +555,13 @@ html.admin-dark .admin-breadcrumb a,
   .admin-store-link { padding: 8px; }
   .admin-stat-grid { grid-template-columns: 1fr; }
   .admin-page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .admin-page { padding: 12px; overflow-x: hidden; }
+  .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
+@media (max-width: 360px) {
+  .admin-topbar-actions { gap: 4px; }
+  .admin-icon-btn { padding: 6px; }
 }
 
 @media (min-width: 901px) {

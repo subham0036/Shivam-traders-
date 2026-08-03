@@ -1,5 +1,6 @@
 .product-page {
   padding: clamp(20px, 4vw, 36px) 0 clamp(80px, 12vw, 120px);
+  overflow-x: hidden;
 }
 
 .breadcrumb {
@@ -9,13 +10,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+  word-break: break-word;
 }
 
 .breadcrumb a:hover { color: var(--saffron); }
 
 .product-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(24px, 5vw, 52px);
   margin-bottom: clamp(32px, 5vw, 52px);
 }
@@ -261,6 +263,8 @@
 
 @media (max-width: 400px) {
   .enquiry-buttons .btn { width: 100%; }
-  .sticky-add-cart { flex-wrap: wrap; }
-  .sticky-price { width: 100%; margin-right: 0; margin-bottom: 4px; }
+  .sticky-add-cart { flex-wrap: wrap; gap: 6px; }
+  .sticky-price { width: 100%; margin-right: 0; margin-bottom: 4px; font-size: 15px; }
+  .product-info h1 { font-size: clamp(20px, 6vw, 24px); word-break: break-word; }
+  .price { font-size: 22px; }
 }

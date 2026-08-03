@@ -166,7 +166,7 @@ const Shop = () => {
                 <p>Try adjusting your filters</p>
               </div>
             ) : (
-              <div className={view === 'grid' ? 'grid-4 products-grid' : 'products-list'}>
+              <div className={view === 'grid' ? 'products-grid' : 'products-list'}>
                 {products.map((p) => (
                   <ProductCard key={p._id} product={p} onQuickView={setQuickView} />
                 ))}

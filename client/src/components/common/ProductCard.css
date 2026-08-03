@@ -6,6 +6,8 @@
   transition: var(--transition);
   border: 1px solid var(--border-gold);
   position: relative;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .product-card::before {
@@ -152,11 +154,24 @@
 
   .product-name {
     font-size: 13px;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
     margin-bottom: 6px;
+    word-break: break-word;
   }
 
   .product-price .current {
-    font-size: 15px;
+    font-size: 14px;
+  }
+
+  .product-card-info {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .product-card-actions button {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
   }
 }
