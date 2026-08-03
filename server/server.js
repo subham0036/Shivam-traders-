@@ -43,42 +43,56 @@ await fs.mkdir(path.join(__dirname, 'uploads'), { recursive: true });
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+
+const normalizeOrigin = (origin) => (origin || '').replace(/\/$/, '');
+
 const clientUrls = (process.env.CLIENT_URL || '')
   .split(',')
-  .map((url) => url.trim())
+  .map((url) => normalizeOrigin(url.trim()))
   .filter(Boolean);
 
-const allowedOrigins = [
+const allowedOrigins = new Set([
   ...clientUrls,
   'http://localhost:5173',
   'http://localhost:5174',
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5174',
-];
+]);
 
 const isLocalDevOrigin = (origin) =>
   /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
 
-const isVercelAppOrigin = (origin) =>
-  /^https:\/\/shivam-traders[\w-]*\.vercel\.app$/.test(origin);
+const isVercelOrigin = (origin) =>
+  /^https:\/\/[\w.-]+\.vercel\.app$/i.test(origin);
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    if (isVercelAppOrigin(origin)) return callback(null, true);
-    if (process.env.NODE_ENV !== 'production' && isLocalDevOrigin(origin)) {
-      return callback(null, true);
-    }
-    callback(null, false);
-  },
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  const normalized = normalizeOrigin(origin);
+  if (allowedOrigins.has(normalized)) return true;
+  if (isVercelOrigin(normalized)) return true;
+  if (process.env.NODE_ENV !== 'production' && isLocalDevOrigin(normalized)) return true;
+  return false;
+};
+
+const corsOptions = {
+  origin: (origin, callback) => callback(null, isAllowedOrigin(origin)),
   credentials: true,
-}));
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
 app.use(xss());
 if (process.env.NODE_ENV !== 'development') {
-  app.use(apiLimiter);
+  app.use((req, res, next) => {
+    if (req.method === 'OPTIONS') return next();
+    return apiLimiter(req, res, next);
+  });
 }
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
