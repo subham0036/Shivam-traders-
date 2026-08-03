@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiStar, FiHeart, FiShare2, FiShield, FiTruck, FiMessageCircle, FiVideo } from 'react-icons/fi';
+import { FiStar, FiShare2, FiShield, FiTruck, FiMessageCircle, FiVideo } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import SEO from '../../components/common/SEO';
 import ProductCard from '../../components/common/ProductCard';
-import { productAPI, reviewAPI, wishlistAPI } from '../../services';
+import { productAPI, reviewAPI } from '../../services';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useLoginPrompt } from '../../context/LoginPromptContext';
@@ -66,12 +66,6 @@ const ProductDetails = () => {
       reason: 'buy',
       onContinue: () => navigate('/checkout'),
     });
-  };
-
-  const handleWishlist = async () => {
-    if (!user) return showToast('Please login first');
-    await wishlistAPI.add(product._id);
-    showToast('Added to wishlist');
   };
 
   const checkPincode = async () => {
@@ -186,7 +180,6 @@ const ProductDetails = () => {
               <div className="action-buttons">
                 <button className="btn btn-primary btn-lg" onClick={handleAddToCart} disabled={!product.stock}>Add to Cart</button>
                 <button className="btn btn-gold btn-lg" onClick={handleBuyNow} disabled={!product.stock}>Buy Now</button>
-                <button className="btn-icon" onClick={handleWishlist}><FiHeart /></button>
                 <button className="btn-icon" onClick={() => shareProduct(product).then((msg) => msg && showToast(msg))}><FiShare2 /></button>
               </div>
 

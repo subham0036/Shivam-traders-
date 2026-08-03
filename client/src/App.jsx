@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
 import ScrollToTop from './components/common/ScrollToTop';
@@ -16,7 +16,6 @@ const Login = lazy(() => import('./pages/customer/Login'));
 const Register = lazy(() => import('./pages/customer/Register'));
 const ForgotPassword = lazy(() => import('./pages/customer/ForgotPassword'));
 const Profile = lazy(() => import('./pages/customer/Profile'));
-const Wishlist = lazy(() => import('./pages/customer/Wishlist'));
 const Categories = lazy(() => import('./pages/customer/Categories'));
 const Contact = lazy(() => import('./pages/customer/Contact'));
 const AdminPanel = lazy(() => import('./pages/admin/AdminPanel'));
@@ -47,7 +46,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="wishlist" element={<Wishlist />} />
+          <Route path="wishlist" element={<Navigate to="/shop" replace />} />
           <Route path="contact" element={<Contact />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="refund-policy" element={<RefundPolicy />} />

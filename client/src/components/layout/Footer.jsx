@@ -57,7 +57,6 @@ const Footer = () => {
               <li><Link to="/register">Register</Link></li>
               <li><Link to="/login">Admin Login</Link></li>
               <li><Link to="/profile">My Account</Link></li>
-              <li><Link to="/wishlist">Wishlist</Link></li>
             </ul>
           </div>
 

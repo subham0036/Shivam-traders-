@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SEO from '../../components/common/SEO';
 import { useAuth } from '../../context/AuthContext';
-import { authAPI, orderAPI, wishlistAPI } from '../../services';
+import { authAPI, orderAPI } from '../../services';
 import { formatPrice, ORDER_STATUS } from '../../utils/helpers';
 import { openInvoicePrint } from '../../utils/invoice';
-import { resolveProductImage } from '../../utils/storeImages';
 import { showToast } from '../../components/common/Toast';
 
 const Profile = () => {
@@ -13,7 +12,6 @@ const Profile = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState('orders');
   const [orders, setOrders] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
   const [profile, setProfile] = useState({ name: user?.name || '', phone: user?.phone || '', email: user?.email || '' });
   const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '' });
   const [address, setAddress] = useState({ fullName: '', phone: '', addressLine1: '', city: '', state: '', pincode: '', isDefault: true });
@@ -21,7 +19,6 @@ const Profile = () => {
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
     orderAPI.getMyOrders().then(({ data }) => setOrders(data.data));
-    wishlistAPI.get().then(({ data }) => setWishlist(data.data.products || []));
   }, [user, navigate]);
 
   const updateProfile = async (e) => {
@@ -59,7 +56,7 @@ const Profile = () => {
         <h1>My Account</h1>
         <div className="profile-layout">
           <nav className="profile-nav">
-            {['orders', 'wishlist', 'profile', 'addresses', 'password'].map((t) => (
+            {['orders', 'profile', 'addresses', 'password'].map((t) => (
               <button key={t} className={tab === t ? 'active' : ''} onClick={() => setTab(t)}>
                 {t.charAt(0).toUpperCase() + t.slice(1)}
               </button>
@@ -92,23 +89,6 @@ const Profile = () => {
                     </div>
                   </div>
                 ))}
-              </div>
-            )}
-
-            {tab === 'wishlist' && (
-              <div>
-                <h2>Wishlist</h2>
-                {wishlist.length === 0 ? <p>No items in wishlist</p> : (
-                  <div className="wishlist-grid">
-                    {wishlist.map((p) => (
-                      <Link key={p._id} to={`/product/${p.slug}`} className="wishlist-item">
-                        <img src={resolveProductImage(p.images)} alt={p.name} />
-                        <h4>{p.name}</h4>
-                        <p>{formatPrice(p.sellingPrice)}</p>
-                      </Link>
-                    ))}
-                  </div>
-                )}
               </div>
             )}
 

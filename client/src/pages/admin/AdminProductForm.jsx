@@ -87,6 +87,17 @@ const AdminProductForm = () => {
     }));
   };
 
+  const setQuickField = (name, value) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const materialQuickOptions = [
+    ...MATERIALS.map((m) => ({ value: m.value, label: m.label })),
+    { value: 'bronze', label: 'Bronze' },
+    { value: 'panchdhatu', label: 'Panchdhatu' },
+    { value: 'fiber', label: 'Fiber' },
+  ];
+
   const handleImageSelect = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
@@ -190,44 +201,57 @@ const AdminProductForm = () => {
               ))}
             </select>
           </div>
-          <div className="form-group">
+          <div className="form-group admin-manual-field">
             <label htmlFor="godName">Deity *</label>
             <input
               id="godName"
-              className="form-control"
+              className="form-control admin-manual-input"
               name="godName"
-              list="deity-suggestions"
               value={form.godName}
               onChange={handleChange}
-              placeholder="Select or type deity name"
+              placeholder="Type deity name here"
               required
+              autoComplete="off"
             />
-            <datalist id="deity-suggestions">
-              {GODS.map((g) => <option key={g} value={g} />)}
-            </datalist>
-            <small className="form-hint">Pick from list or type your own (e.g. Sai Baba, Radha Krishna)</small>
+            <p className="admin-manual-label">Quick pick (optional) — or type your own above:</p>
+            <div className="admin-quick-picks">
+              {GODS.map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  className={`admin-quick-chip${form.godName === g ? ' active' : ''}`}
+                  onClick={() => setQuickField('godName', g)}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="form-group">
+          <div className="form-group admin-manual-field">
             <label htmlFor="material">Material *</label>
             <input
               id="material"
-              className="form-control"
+              className="form-control admin-manual-input"
               name="material"
-              list="material-suggestions"
               value={form.material}
               onChange={handleChange}
-              placeholder="Select or type material"
+              placeholder="Type material here (e.g. brass, marble, bronze)"
               required
+              autoComplete="off"
             />
-            <datalist id="material-suggestions">
-              {MATERIALS.map((m) => (
-                <option key={m.value} value={m.value}>{m.label}</option>
+            <p className="admin-manual-label">Quick pick (optional) — or type your own above:</p>
+            <div className="admin-quick-picks">
+              {materialQuickOptions.map((m) => (
+                <button
+                  key={m.value}
+                  type="button"
+                  className={`admin-quick-chip${form.material === m.value ? ' active' : ''}`}
+                  onClick={() => setQuickField('material', m.value)}
+                >
+                  {m.label}
+                </button>
               ))}
-              <option value="bronze">Bronze</option>
-              <option value="panchdhatu">Panchdhatu</option>
-              <option value="fiber">Fiber</option>
-            </datalist>
-            <small className="form-hint">Pick from list or type manually (e.g. panchdhatu, bronze)</small>
+            </div>
           </div>
           <div className="form-group">
             <label>Height (inches) *</label>

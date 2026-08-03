@@ -1,17 +1,14 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiHeart, FiShoppingBag, FiStar } from 'react-icons/fi';
+import { FiShoppingBag, FiStar } from 'react-icons/fi';
 import { formatPrice, getDiscountPercent } from '../../utils/helpers';
 import { resolveProductImage, PRODUCT_PLACEHOLDERS } from '../../utils/storeImages';
 import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
-import { wishlistAPI } from '../../services';
 import { showToast } from './Toast';
 import './ProductCard.css';
 
 const ProductCard = ({ product, onQuickView }) => {
   const { addToCart } = useCart();
-  const { user } = useAuth();
 
   const discount = product.discount || getDiscountPercent(product.mrp, product.sellingPrice);
   const fallbackImage = PRODUCT_PLACEHOLDERS[(product.name?.length || 0) % PRODUCT_PLACEHOLDERS.length];
@@ -24,17 +21,6 @@ const ProductCard = ({ product, onQuickView }) => {
       showToast('Added to cart');
     } catch {
       showToast('Could not add to cart');
-    }
-  };
-
-  const handleWishlist = async (e) => {
-    e.preventDefault();
-    if (!user) return showToast('Please login first');
-    try {
-      await wishlistAPI.add(product._id);
-      showToast('Added to wishlist');
-    } catch {
-      showToast('Already in wishlist');
     }
   };
 
@@ -65,7 +51,6 @@ const ProductCard = ({ product, onQuickView }) => {
             )}
           </div>
           <div className="product-card-actions">
-            <button onClick={handleWishlist} aria-label="Add to wishlist"><FiHeart /></button>
             {onQuickView && <button onClick={(e) => { e.preventDefault(); onQuickView(product); }} aria-label="Quick view">👁</button>}
             <button onClick={handleAddToCart} aria-label="Add to cart"><FiShoppingBag /></button>
           </div>

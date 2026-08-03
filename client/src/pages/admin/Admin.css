@@ -781,3 +781,62 @@ html.admin-dark .admin-breadcrumb a,
   .admin-form-grid { grid-template-columns: 1fr; }
   .admin-upload-btn { width: 100%; }
 }
+
+.admin-manual-field {
+  grid-column: 1 / -1;
+  background: #fffaf3;
+  border: 1px solid #e8d5b5;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.admin-manual-input {
+  font-size: 16px !important;
+  font-weight: 600;
+  border: 2px solid #d4af37 !important;
+  background: #fff !important;
+}
+
+.admin-manual-input:focus {
+  border-color: var(--saffron, #ff9933) !important;
+  box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.15);
+}
+
+.admin-manual-label {
+  margin: 12px 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #7a6a5a;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.admin-quick-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-quick-chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #e8d5b5;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5c1a1a;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  touch-action: manipulation;
+}
+
+.admin-quick-chip:hover {
+  border-color: var(--saffron, #ff9933);
+  color: var(--saffron, #ff9933);
+}
+
+.admin-quick-chip.active {
+  background: linear-gradient(135deg, var(--saffron, #ff9933), #e67e00);
+  border-color: transparent;
+  color: #fff;
+}

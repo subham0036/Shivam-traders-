@@ -11,7 +11,7 @@ const SKIP_PATH_PREFIXES = ['/login', '/register', '/forgot-password', '/reset-p
 const REASON_COPY = {
   welcome: {
     title: 'Welcome to Shivam Traders',
-    body: 'Login to track orders, save your wishlist, and checkout faster.',
+    body: 'Login to track orders and checkout faster.',
   },
   checkout: {
     title: 'Login before checkout?',

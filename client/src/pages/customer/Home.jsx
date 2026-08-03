@@ -65,25 +65,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Shop by Deity — image grid */}
-      <section className="home-products-section">
-        <div className="container">
-          <div className="home-section-head">
-            <h2>Shop by Deity</h2>
-            <Link to="/categories" className="home-see-all">See all →</Link>
-          </div>
-          <div className="deity-grid">
-            {shopGods.map((god) => (
-              <Link key={god} to={`/shop?god=${god}`} className="deity-card">
-                <img src={DEITY_IMAGES[god] || MURTI_IMAGES.ganeshaStatue} alt={`${god} murti`} loading="lazy" />
-                <span>{god}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Main product wall */}
+      {/* Main product wall — shown first after hero */}
       <section className="home-products-section home-products-section-alt">
         <div className="container">
           <div className="home-section-head">
@@ -132,6 +114,24 @@ const Home = () => {
           </div>
         </section>
       )}
+
+      {/* Shop by Deity — below product sections */}
+      <section className="home-products-section">
+        <div className="container">
+          <div className="home-section-head">
+            <h2>Shop by Deity</h2>
+            <Link to="/categories" className="home-see-all">See all →</Link>
+          </div>
+          <div className="deity-grid">
+            {shopGods.map((god) => (
+              <Link key={god} to={`/shop?god=${god}`} className="deity-card">
+                <img src={DEITY_IMAGES[god] || MURTI_IMAGES.ganeshaStatue} alt={`${god} murti`} loading="lazy" />
+                <span>{god}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Material chips — compact */}
       <section className="home-materials">
