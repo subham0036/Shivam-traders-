@@ -133,7 +133,7 @@ const AdminLayout = ({ children }) => {
               {dark ? <FiSun /> : <FiMoon />}
             </button>
             <Link to="/" className="admin-store-link" target="_blank" rel="noreferrer">
-              <FiExternalLink /> Store
+              <FiExternalLink /> <span>Store</span>
             </Link>
           </div>
         </header>

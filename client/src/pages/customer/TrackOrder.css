@@ -14,4 +14,18 @@
 .track-step.current { background: var(--saffron); color: white; }
 .track-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .track-items h3 { margin-bottom: 12px; font-size: 16px; }
-.track-item-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.track-item-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; gap: 12px; flex-wrap: wrap; }
+
+@media (max-width: 768px) {
+  .track-form { flex-direction: column; }
+  .track-form .btn { width: 100%; }
+  .track-header { flex-direction: column; align-items: flex-start; }
+  .track-header h2 { font-size: clamp(18px, 4vw, 22px); }
+  .track-total { font-size: clamp(17px, 4vw, 20px); }
+  .track-step { font-size: 11px; padding: 6px 10px; }
+}
+
+@media (max-width: 480px) {
+  .track-card { padding: 20px 16px; }
+  .track-timeline { gap: 6px; }
+}

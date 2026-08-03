@@ -6,6 +6,7 @@ import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import './styles/index.css';
+import './styles/pages.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

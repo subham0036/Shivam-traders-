@@ -7,7 +7,6 @@ import { formatPrice, ORDER_STATUS } from '../../utils/helpers';
 import { openInvoicePrint } from '../../utils/invoice';
 import { resolveProductImage } from '../../utils/storeImages';
 import { showToast } from '../../components/common/Toast';
-import '../customer/Auth.css';
 
 const Profile = () => {
   const { user, logout } = useAuth();
@@ -56,16 +55,16 @@ const Profile = () => {
   return (
     <>
       <SEO title="My Profile" />
-      <div className="container" style={{ padding: '40px 20px' }}>
-        <h1 style={{ marginBottom: 32 }}>My Account</h1>
-        <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 32 }}>
+      <div className="container profile-page">
+        <h1>My Account</h1>
+        <div className="profile-layout">
           <nav className="profile-nav">
             {['orders', 'wishlist', 'profile', 'addresses', 'password'].map((t) => (
               <button key={t} className={tab === t ? 'active' : ''} onClick={() => setTab(t)}>
                 {t.charAt(0).toUpperCase() + t.slice(1)}
               </button>
             ))}
-            <button onClick={() => { logout(); navigate('/'); }} style={{ color: '#e74c3c' }}>Logout</button>
+            <button type="button" className="logout-btn" onClick={() => { logout(); navigate('/'); }}>Logout</button>
           </nav>
 
           <div className="profile-content">
@@ -96,7 +95,7 @@ const Profile = () => {
               <div>
                 <h2>Wishlist</h2>
                 {wishlist.length === 0 ? <p>No items in wishlist</p> : (
-                  <div className="grid-3">
+                  <div className="wishlist-grid">
                     {wishlist.map((p) => (
                       <Link key={p._id} to={`/product/${p.slug}`} className="wishlist-item">
                         <img src={resolveProductImage(p.images)} alt={p.name} />
@@ -145,21 +144,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <style>{`
-        .profile-nav { display: flex; flex-direction: column; gap: 4px; }
-        .profile-nav button { text-align: left; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s; }
-        .profile-nav button.active { background: var(--saffron); color: white; }
-        .profile-nav button:hover:not(.active) { background: var(--cream); }
-        .profile-content { background: white; padding: 32px; border-radius: 16px; box-shadow: var(--shadow); }
-        .profile-content h2 { margin-bottom: 24px; }
-        .order-card { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
-        .order-card span { margin-right: 12px; font-size: 14px; color: var(--text-light); }
-        .wishlist-item { background: white; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); padding-bottom: 12px; }
-        .wishlist-item img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
-        .wishlist-item h4 { padding: 8px 12px 4px; font-size: 14px; }
-        .wishlist-item p { padding: 0 12px; font-weight: 700; }
-        @media (max-width: 768px) { .container > div { grid-template-columns: 1fr !important; } .profile-nav { flex-direction: row; flex-wrap: wrap; } }
-      `}</style>
     </>
   );
 };

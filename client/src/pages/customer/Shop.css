@@ -242,6 +242,16 @@
   .view-toggle { margin-left: 0; }
 }
 
+@media (max-width: 768px) {
+  .shop-toolbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .shop-toolbar > * { flex: 1 1 auto; min-width: 0; }
+  .view-toggle { width: 100%; justify-content: center; }
+}
+
 @media (max-width: 520px) {
   .shop-toolbar { padding: 12px; }
   .sort-select { max-width: 100%; width: 100%; }

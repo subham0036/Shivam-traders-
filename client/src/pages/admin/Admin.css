@@ -547,6 +547,14 @@ html.admin-dark .admin-breadcrumb a,
   }
 
   .admin-filters .form-control { max-width: 100%; flex: 1; }
+
+  .admin-topbar { flex-wrap: wrap; padding: 10px 14px; }
+  .admin-breadcrumb { font-size: 12px; flex: 1 1 100%; order: 2; }
+  .admin-topbar-actions { margin-left: auto; }
+  .admin-store-link span { display: none; }
+  .admin-store-link { padding: 8px; }
+  .admin-stat-grid { grid-template-columns: 1fr; }
+  .admin-page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
 
 @media (min-width: 901px) {

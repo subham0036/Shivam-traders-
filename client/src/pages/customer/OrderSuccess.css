@@ -1,6 +1,6 @@
 .order-success-inner {
   text-align: center;
-  padding: 80px 20px;
+  padding: clamp(48px, 10vw, 80px) clamp(16px, 4vw, 20px);
   max-width: 640px;
   margin: 0 auto;
 }
@@ -129,7 +129,14 @@
   flex-wrap: wrap;
 }
 
+.order-success-actions .btn {
+  flex: 1 1 140px;
+  max-width: 100%;
+}
+
 @media (max-width: 480px) {
+  .order-success-actions { flex-direction: column; align-items: stretch; }
+  .order-success-actions .btn { width: 100%; }
   .upi-qr-block { flex-direction: column; text-align: center; }
   .upi-id-copy { width: 100%; justify-content: center; }
 }

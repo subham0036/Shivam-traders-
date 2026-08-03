@@ -24,6 +24,11 @@
   --font-sans: 'Inter', -apple-system, sans-serif;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --header-height: 76px;
+  --text-muted: var(--text-light);
+  --gold-pale: var(--gold-light);
+  --gradient-spiritual: linear-gradient(135deg, var(--saffron), var(--saffron-dark));
+  --radius-md: var(--radius);
+  --shadow-sm: var(--shadow);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -364,9 +369,12 @@ input, textarea, select { font-family: inherit; }
 
 @media (max-width: 520px) {
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-  .trust-strip-inner { gap: 12px; justify-content: flex-start; padding: 0 8px; }
+  .trust-strip-inner { gap: 10px 14px; justify-content: center; padding: 0 8px; }
+  .trust-strip-inner span { white-space: normal; text-align: center; justify-content: center; }
+  .btn { white-space: normal; text-align: center; }
 }
 
 @media (max-width: 380px) {
   .container { padding: 0 14px; }
+  .btn-lg { width: 100%; }
 }
