@@ -14,7 +14,6 @@ const Checkout = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('upi');
   const [upiSettings, setUpiSettings] = useState(null);
 
   useEffect(() => {
@@ -55,7 +54,7 @@ const Checkout = () => {
           pincode: form.pincode,
         },
         deliveryInstructions: form.deliveryInstructions,
-        paymentMethod,
+        paymentMethod: 'upi',
         guestEmail: !user ? form.guestEmail : undefined,
         guestPhone: !user ? form.guestPhone : undefined,
         giftWrapping: cart.giftWrapping,
@@ -161,45 +160,14 @@ const Checkout = () => {
 
               <section className="checkout-section">
                 <h3>Payment Method</h3>
-                <div className="payment-options">
-                  <label className={`payment-option ${paymentMethod === 'upi' ? 'active' : ''}`}>
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="upi"
-                      checked={paymentMethod === 'upi'}
-                      onChange={() => setPaymentMethod('upi')}
-                    />
-                    <span>UPI Payment</span>
-                  </label>
-                  {upiSettings?.payment?.codEnabled !== false && (
-                    <label className={`payment-option ${paymentMethod === 'cod' ? 'active' : ''}`}>
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="cod"
-                        checked={paymentMethod === 'cod'}
-                        onChange={() => setPaymentMethod('cod')}
-                      />
-                      <span>Cash on Delivery (COD)</span>
-                    </label>
-                  )}
-                </div>
-                {paymentMethod === 'upi' && (
-                  <>
-                    <p className="form-hint">Pay via UPI — scan the QR code and upload your payment screenshot on the next page.</p>
-                    <UpiPaymentBox
-                      amount={prices.totalPrice}
-                      upiId={upiSettings?.payment?.upiId || UPI_DEFAULTS.upiId}
-                      upiName={upiSettings?.payment?.upiName || UPI_DEFAULTS.upiName}
-                      orderNote="Shivam Traders Order"
-                      compact
-                    />
-                  </>
-                )}
-                {paymentMethod === 'cod' && (
-                  <p className="form-hint">Pay in cash when your order is delivered. No online payment required.</p>
-                )}
+                <p className="form-hint">Pay via UPI — scan the QR code and upload your payment screenshot on the next page.</p>
+                <UpiPaymentBox
+                  amount={prices.totalPrice}
+                  upiId={upiSettings?.payment?.upiId || UPI_DEFAULTS.upiId}
+                  upiName={upiSettings?.payment?.upiName || UPI_DEFAULTS.upiName}
+                  orderNote="Shivam Traders Order"
+                  compact
+                />
               </section>
             </div>
 
@@ -215,7 +183,7 @@ const Checkout = () => {
               <div className="summary-row"><span>Shipping</span><span>{prices.shippingPrice === 0 ? 'FREE' : formatPrice(prices.shippingPrice)}</span></div>
               <div className="summary-row total"><span>Total</span><span>{formatPrice(prices.totalPrice)}</span></div>
               <button type="submit" className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: 20 }} disabled={loading}>
-                {loading ? 'Processing...' : paymentMethod === 'cod' ? 'Place Order — Pay on Delivery' : 'Place Order — Pay on Next Step'}
+                {loading ? 'Processing...' : 'Place Order — Pay on Next Step'}
               </button>
             </div>
           </form>
