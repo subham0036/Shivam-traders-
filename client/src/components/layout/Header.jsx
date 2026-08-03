@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiShoppingBag, FiHeart, FiUser, FiMenu, FiX } from 'react-icons/fi';
+import { FiSearch, FiShoppingBag, FiUser, FiMenu, FiX } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import './Header.css';
@@ -122,7 +122,7 @@ const Header = () => {
 
         <Link to="/" className="logo">
           <span className="logo-icon">🕉</span>
-          <div>
+          <div className="logo-text">
             <span className="logo-name">Shivam Traders</span>
             <span className="logo-tagline">दिव्य मूर्तियाँ</span>
           </div>
@@ -131,8 +131,7 @@ const Header = () => {
         {renderNavLinks('nav nav-desktop')}
 
         <div className="header-actions">
-          <button type="button" onClick={() => setSearchOpen(!searchOpen)} aria-label="Search"><FiSearch /></button>
-          <Link to="/wishlist" aria-label="Wishlist"><FiHeart /></Link>
+          <button type="button" className="header-search-btn" onClick={() => setSearchOpen(!searchOpen)} aria-label="Search"><FiSearch /></button>
           <Link to="/cart" className="cart-link" aria-label="Cart">
             <FiShoppingBag />
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}

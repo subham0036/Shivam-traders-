@@ -35,11 +35,7 @@ const productSchema = new mongoose.Schema(
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
     godName: { type: String, required: true },
-    material: {
-      type: String,
-      enum: ['brass', 'marble', 'wood', 'clay', 'resin', 'silver', 'copper', 'stone', 'other'],
-      required: true,
-    },
+    material: { type: String, required: true, trim: true, lowercase: true },
     height: { type: Number, required: true },
     width: Number,
     weight: Number,

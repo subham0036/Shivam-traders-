@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { productAPI, categoryAPI } from '../../services';
 import { GODS, MATERIALS } from '../../utils/helpers';
@@ -28,6 +28,7 @@ const AdminProductForm = () => {
   const { id } = useParams();
   const isEdit = Boolean(id);
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   const [form, setForm] = useState(emptyForm);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -122,8 +123,8 @@ const AdminProductForm = () => {
         description: form.description.trim(),
         shortDescription: form.shortDescription.trim(),
         category: form.category,
-        godName: form.godName,
-        material: form.material,
+        godName: form.godName.trim(),
+        material: form.material.trim().toLowerCase(),
         height: Number(form.height),
         sellingPrice: Number(form.sellingPrice),
         mrp: Number(form.mrp),
@@ -138,7 +139,7 @@ const AdminProductForm = () => {
         isActive: form.isActive,
       };
 
-      if (isEdit && existingImages.length) {
+      if (isEdit) {
         payload.images = existingImages;
       } else if (form.imageUrl.trim() && !imageFiles.length) {
         payload.images = [{ url: form.imageUrl.trim(), alt: form.name }];
@@ -190,16 +191,43 @@ const AdminProductForm = () => {
             </select>
           </div>
           <div className="form-group">
-            <label>Deity *</label>
-            <select className="form-control" name="godName" value={form.godName} onChange={handleChange} required>
-              {GODS.map((g) => <option key={g} value={g}>{g}</option>)}
-            </select>
+            <label htmlFor="godName">Deity *</label>
+            <input
+              id="godName"
+              className="form-control"
+              name="godName"
+              list="deity-suggestions"
+              value={form.godName}
+              onChange={handleChange}
+              placeholder="Select or type deity name"
+              required
+            />
+            <datalist id="deity-suggestions">
+              {GODS.map((g) => <option key={g} value={g} />)}
+            </datalist>
+            <small className="form-hint">Pick from list or type your own (e.g. Sai Baba, Radha Krishna)</small>
           </div>
           <div className="form-group">
-            <label>Material *</label>
-            <select className="form-control" name="material" value={form.material} onChange={handleChange} required>
-              {MATERIALS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
-            </select>
+            <label htmlFor="material">Material *</label>
+            <input
+              id="material"
+              className="form-control"
+              name="material"
+              list="material-suggestions"
+              value={form.material}
+              onChange={handleChange}
+              placeholder="Select or type material"
+              required
+            />
+            <datalist id="material-suggestions">
+              {MATERIALS.map((m) => (
+                <option key={m.value} value={m.value}>{m.label}</option>
+              ))}
+              <option value="bronze">Bronze</option>
+              <option value="panchdhatu">Panchdhatu</option>
+              <option value="fiber">Fiber</option>
+            </datalist>
+            <small className="form-hint">Pick from list or type manually (e.g. panchdhatu, bronze)</small>
           </div>
           <div className="form-group">
             <label>Height (inches) *</label>
@@ -222,11 +250,23 @@ const AdminProductForm = () => {
         <div className="form-group">
           <label>Product Photos *</label>
           <div className="admin-image-upload">
-            <label className="admin-upload-btn">
-              <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,.heic,.heif" multiple onChange={handleImageSelect} />
-              Upload from phone / computer
-            </label>
-            <small className="form-hint">JPG, PNG, WEBP or HEIC. You can select multiple photos.</small>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
+              multiple
+              onChange={handleImageSelect}
+              className="admin-file-input-hidden"
+            />
+            <button type="button" className="admin-upload-btn" onClick={() => fileInputRef.current?.click()}>
+              {imagePreviews.length || existingImages.length ? '+ Add More Photos' : 'Upload Photos'}
+            </button>
+            <small className="form-hint">
+              Select one or many photos at once. JPG, PNG, WEBP or HEIC supported.
+              {(imagePreviews.length + existingImages.length) > 0 && (
+                <strong> {imagePreviews.length + existingImages.length} photo(s) added.</strong>
+              )}
+            </small>
           </div>
 
           {(existingImages.length > 0 || imagePreviews.length > 0) && (
