@@ -79,14 +79,3 @@
   padding: 8px;
   text-decoration: underline;
 }
-
-.login-prompt-admin {
-  margin-top: 18px;
-  font-size: 13px;
-  color: var(--text-light);
-}
-
-.login-prompt-admin a {
-  color: var(--maroon);
-  font-weight: 700;
-}

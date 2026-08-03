@@ -33,7 +33,6 @@ const Login = () => {
         <div className="auth-card">
           <h1>Welcome Back</h1>
           <p>Login to your Shivam Traders account</p>
-          <p className="auth-admin-note">Store admin? Use your admin email and password on this same page.</p>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>Email</label>

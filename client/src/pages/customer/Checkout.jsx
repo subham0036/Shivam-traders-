@@ -92,11 +92,9 @@ const Checkout = () => {
                   <p>
                     Sign in to track your order and save your details for next time.
                     {' '}
-                    <Link to="/login">Customer Login</Link>
+                    <Link to="/login">Login</Link>
                     {' · '}
                     <Link to="/register">Register</Link>
-                    {' · '}
-                    <Link to="/login">Admin Login</Link>
                   </p>
                 </section>
               )}

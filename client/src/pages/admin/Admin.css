@@ -208,7 +208,30 @@
 
 .admin-page-header p { font-size: 14px; color: var(--text-light, #7a6a5a); }
 
-.admin-page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.admin-page-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.admin-invoice-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 148px;
+  padding: 10px 18px !important;
+  font-weight: 700;
+  box-shadow: 0 3px 12px rgba(255, 153, 51, 0.25);
+}
+
+.admin-invoice-btn svg {
+  font-size: 16px;
+  flex-shrink: 0;
+}
 
 .admin-back {
   display: inline-block;
@@ -554,7 +577,9 @@ html.admin-dark .admin-breadcrumb a,
   .admin-store-link span { display: none; }
   .admin-store-link { padding: 8px; }
   .admin-stat-grid { grid-template-columns: 1fr; }
-  .admin-page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .admin-page-header { flex-direction: column; align-items: stretch; gap: 12px; }
+  .admin-page-actions { width: 100%; justify-content: stretch; }
+  .admin-invoice-btn { width: 100%; min-width: 0; }
   .admin-page { padding: 12px; overflow-x: hidden; }
   .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }

@@ -78,13 +78,17 @@ const Profile = () => {
                       <span>{new Date(o.createdAt).toLocaleDateString('en-IN')}</span>
                       <span className="badge badge-saffron">{ORDER_STATUS[o.status]}</span>
                     </div>
-                    <div>
-                      <span>{formatPrice(o.totalPrice)}</span>
-                      {o.paymentMethod === 'upi' && o.paymentStatus === 'pending' && !o.paymentScreenshot?.url && (
-                        <Link to={`/order-success/${o.orderNumber}`} className="btn btn-sm btn-primary">Pay via UPI</Link>
-                      )}
-                      <button className="btn btn-outline btn-sm" onClick={() => downloadInvoice(o._id)}>Invoice</button>
-                      <Link to={`/track-order?order=${o.orderNumber}`} className="btn btn-sm btn-outline">Track</Link>
+                    <div className="order-card-actions">
+                      <span className="order-card-total">{formatPrice(o.totalPrice)}</span>
+                      <div className="order-card-buttons">
+                        {o.paymentMethod === 'upi' && o.paymentStatus === 'pending' && !o.paymentScreenshot?.url && (
+                          <Link to={`/order-success/${o.orderNumber}`} className="btn btn-sm btn-primary">Pay via UPI</Link>
+                        )}
+                        <button type="button" className="btn btn-outline btn-sm order-invoice-btn" onClick={() => downloadInvoice(o._id)}>
+                          Print Invoice
+                        </button>
+                        <Link to={`/track-order?order=${o.orderNumber}`} className="btn btn-sm btn-outline">Track</Link>
+                      </div>
                     </div>
                   </div>
                 ))}

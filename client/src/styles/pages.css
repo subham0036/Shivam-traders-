@@ -307,6 +307,37 @@
 .order-card strong { display: block; color: var(--maroon-dark); margin-bottom: 4px; }
 .order-card span { font-size: 13px; color: var(--text-muted); margin-right: 8px; }
 
+.order-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.order-card-total {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--maroon-dark) !important;
+  white-space: nowrap;
+}
+
+.order-card-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.order-invoice-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 118px;
+}
+
 .wishlist-item {
   background: var(--white);
   border-radius: var(--radius-md);
@@ -376,15 +407,33 @@
 @media (max-width: 480px) {
   .order-card {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
-  .order-card > div:last-child {
+  .order-card-actions {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    flex-direction: column;
+    align-items: stretch;
+    margin-left: 0;
+    gap: 12px;
   }
-  .order-card .btn { flex: 1; min-width: 120px; }
+  .order-card-total {
+    text-align: right;
+    width: 100%;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .order-card-buttons {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .order-card-buttons .btn,
+  .order-card-buttons a.btn {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+    text-align: center;
+    justify-content: center;
+  }
+  .order-invoice-btn { min-width: 0; }
 }
 
 @media (max-width: 400px) {

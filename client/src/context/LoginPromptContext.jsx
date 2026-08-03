@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FiX } from 'react-icons/fi';
 import { useAuth } from './AuthContext';
 import '../components/common/LoginPromptModal.css';
@@ -11,7 +11,7 @@ const SKIP_PATH_PREFIXES = ['/login', '/register', '/forgot-password', '/reset-p
 const REASON_COPY = {
   welcome: {
     title: 'Welcome to Shivam Traders',
-    body: 'Login to track orders, save your wishlist, and checkout faster. Store owners can use Admin Login with their admin email.',
+    body: 'Login to track orders, save your wishlist, and checkout faster.',
   },
   checkout: {
     title: 'Login before checkout?',
@@ -108,9 +108,6 @@ export const LoginPromptProvider = ({ children }) => {
                 </button>
               )}
             </div>
-            <p className="login-prompt-admin">
-              Store admin? <Link to="/login" onClick={closePrompt}>Admin Login</Link>
-            </p>
           </div>
         </div>
       )}

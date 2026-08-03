@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
+import { FiPrinter } from 'react-icons/fi';
 import { orderAPI } from '../../../services';
 import { formatPrice, ORDER_STATUS } from '../../../utils/helpers';
 import { resolveMediaUrl } from '../../../utils/invoice';
@@ -159,7 +160,10 @@ const OrderDetail = () => {
           <p>{ORDER_STATUS[order.status] || order.status} · {order.paymentStatus}</p>
         </div>
         <div className="admin-page-actions">
-          <button type="button" className="btn btn-outline btn-sm" onClick={handlePrint}>Print Invoice</button>
+          <button type="button" className="btn btn-primary btn-sm admin-invoice-btn" onClick={handlePrint}>
+            <FiPrinter aria-hidden="true" />
+            Print Invoice
+          </button>
         </div>
       </div>
 
