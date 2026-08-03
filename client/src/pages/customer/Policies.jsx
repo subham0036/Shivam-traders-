@@ -36,7 +36,7 @@ export const ShippingPolicy = () => (
     <h3 style={{ margin: '24px 0 12px', color: 'var(--text)' }}>Delivery Time</h3>
     <p>Standard delivery: 5-7 business days. Metro cities: 3-5 business days.</p>
     <h3 style={{ margin: '24px 0 12px', color: 'var(--text)' }}>Shipping Charges</h3>
-    <p>Free shipping on orders above ₹2,000. Standard charge: ₹99.</p>
+    <p>Free shipping on orders above ₹499. Standard charge: ₹99.</p>
   </PolicyPage>
 );
 

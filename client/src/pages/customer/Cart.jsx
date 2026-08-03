@@ -34,7 +34,7 @@ const Cart = () => {
     await updateGift(checked, giftMessage);
   };
 
-  const freeShippingThreshold = 2000;
+  const freeShippingThreshold = 499;
   const subtotal = prices.itemsPrice || 0;
   const shippingProgress = Math.min(100, (subtotal / freeShippingThreshold) * 100);
 

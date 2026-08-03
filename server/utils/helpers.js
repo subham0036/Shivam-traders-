@@ -39,7 +39,7 @@ export const calcPrices = (items, shipping = {}, coupon = null, giftWrapping = f
 
   const giftWrappingCharge = giftWrapping ? (shipping.giftWrappingCharge || 50) : 0;
   const subtotal = itemsPrice - couponDiscount;
-  const shippingPrice = subtotal >= (shipping.freeShippingThreshold || 2000)
+  const shippingPrice = subtotal >= (shipping.freeShippingThreshold || 499)
     ? 0
     : (shipping.standardShippingCharge || 99);
   const taxPrice = 0;

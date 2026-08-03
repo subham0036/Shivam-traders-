@@ -20,7 +20,7 @@ const settingsSchema = new mongoose.Schema(
       twitter: String,
     },
     shipping: {
-      freeShippingThreshold: { type: Number, default: 2000 },
+      freeShippingThreshold: { type: Number, default: 499 },
       standardShippingCharge: { type: Number, default: 99 },
       expressShippingCharge: { type: Number, default: 199 },
       gstRate: { type: Number, default: 18 },
