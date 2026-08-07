@@ -7,7 +7,7 @@ import Coupon from '../models/Coupon.js';
 import Newsletter from '../models/Newsletter.js';
 import Settings from '../models/Settings.js';
 import { uploadToCloudinary } from '../services/cloudinaryService.js';
-import { saveLocalFile } from '../services/localUploadService.js';
+import { saveMediaFile } from '../utils/uploadHelper.js';
 
 // @desc    Dashboard stats
 // @route   GET /api/admin/dashboard
@@ -263,12 +263,12 @@ export const updateSettings = async (req, res) => {
     try {
       settings.logo = await uploadToCloudinary(req.files.image[0].buffer, 'settings');
     } catch {
-      settings.logo = await saveLocalFile(req.files.image[0], 'settings');
+      settings.logo = await saveMediaFile(req.files.image[0], 'settings');
     }
   }
   if (req.files?.qrCode?.[0]) {
     settings.payment = { ...(settings.payment?.toObject?.() || settings.payment || {}) };
-    settings.payment.upiQrCode = await saveLocalFile(req.files.qrCode[0], 'settings');
+    settings.payment.upiQrCode = await saveMediaFile(req.files.qrCode[0], 'settings');
     settings.markModified('payment');
   }
   if (Array.isArray(body.homeShowcase)) {
@@ -288,7 +288,7 @@ export const updateSettings = async (req, res) => {
     for (let i = 0; i < showcase.length; i++) {
       const file = req.files?.[`showcase${i}`]?.[0];
       if (file) {
-        showcase[i].image = await saveLocalFile(file, 'settings');
+        showcase[i].image = await saveMediaFile(file, 'settings');
       }
     }
     settings.homeShowcase = showcase;
@@ -319,7 +319,7 @@ export const updateHomeShowcase = async (req, res) => {
     const file = req.files?.[`showcase${i}`]?.[0];
     let image = existing[i]?.image;
     if (file) {
-      image = await saveLocalFile(file, 'settings');
+      image = await saveMediaFile(file, 'settings');
     } else if (item.image?.url) {
       image = { url: item.image.url, publicId: item.image.publicId || '' };
     }

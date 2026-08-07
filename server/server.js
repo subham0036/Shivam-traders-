@@ -11,6 +11,8 @@ import connectDB from './config/db.js';
 import mongoose from 'mongoose';
 import { migrateMediaUrls } from './utils/migrateMediaUrls.js';
 import { getUploadsRoot } from './services/localUploadService.js';
+import { streamGridFSFile } from './services/gridfsUploadService.js';
+import { getUploadStorageMode } from './utils/uploadHelper.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
 import { wrapRouter } from './middleware/asyncHandler.js';
@@ -38,6 +40,7 @@ process.on('uncaughtException', (err) => {
 connectDB();
 
 mongoose.connection.once('open', () => {
+  console.log(`Upload storage mode: ${getUploadStorageMode()}`);
   migrateMediaUrls().catch((err) => {
     console.error('Media URL migration skipped:', err.message);
   });
@@ -108,6 +111,18 @@ if (process.env.NODE_ENV !== 'development') {
   });
 }
 
+app.use('/uploads', async (req, res, next) => {
+  if (req.method !== 'GET') return next();
+  const relativePath = req.path.replace(/^\//, '');
+  if (!relativePath || mongoose.connection.readyState !== 1) return next();
+  try {
+    const served = await streamGridFSFile(relativePath, res);
+    if (served) return;
+  } catch (err) {
+    console.error('GridFS serve error:', err.message);
+  }
+  next();
+});
 app.use('/uploads', express.static(getUploadsRoot()));
 
 app.get('/api/health', (req, res) => {
@@ -117,6 +132,7 @@ app.get('/api/health', (req, res) => {
     success: true,
     message: 'Shivam Traders API is running',
     database: dbStatus,
+    uploadStorage: getUploadStorageMode(),
     ...(dbStatus !== 'connected' && {
       hint: 'MongoDB Atlas → Network Access → Add Current IP Address (or 0.0.0.0/0 for development)',
     }),

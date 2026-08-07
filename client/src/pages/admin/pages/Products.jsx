@@ -34,6 +34,12 @@ const Products = () => {
         <h1>Products</h1>
         {isAdmin && <Link to="/admin/products/new" className="btn btn-primary btn-sm">+ Add Product</Link>}
       </div>
+      <div className="admin-card" style={{ marginBottom: 16, borderColor: '#e67e22', background: 'rgba(230, 126, 34, 0.08)' }}>
+        <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6 }}>
+          <strong>Photos missing on the live site?</strong> After a server update, old uploaded files may have been lost.
+          Open each product → <strong>Edit</strong> → re-upload photos and save. New uploads are stored permanently in your database and will not disappear again.
+        </p>
+      </div>
       <div className="admin-table-wrap">
         <table className="admin-table">
           <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Flags</th><th>Actions</th></tr></thead>

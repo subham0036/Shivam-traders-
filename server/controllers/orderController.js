@@ -7,7 +7,7 @@ import Coupon from '../models/Coupon.js';
 import Settings from '../models/Settings.js';
 import { generateOrderNumber, generateInvoiceNumber, calcPrices } from '../utils/helpers.js';
 import { verifyRazorpayPayment } from '../services/razorpayService.js';
-import { saveLocalFile } from '../services/localUploadService.js';
+import { saveMediaFile } from '../utils/uploadHelper.js';
 import {
   notifyOrderPlaced, notifyOrderStatus, notifyPaymentApproved, notifyPaymentRejected,
 } from '../services/notificationService.js';
@@ -182,7 +182,7 @@ export const uploadUpiPayment = async (req, res) => {
   }
 
   order.upiTransactionId = upiTransactionId;
-  order.paymentScreenshot = await saveLocalFile(req.file, 'payments');
+  order.paymentScreenshot = await saveMediaFile(req.file, 'payments');
   order.paymentVerificationHistory.push({ action: 'submitted', note: 'Customer uploaded payment proof' });
   await order.save();
   res.json({ success: true, data: order, message: 'Payment proof submitted. Awaiting admin verification.' });

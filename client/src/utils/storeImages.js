@@ -45,9 +45,16 @@ export const isLocalMediaUrl = (url) =>
 export const isLiveSite = () =>
   typeof window !== 'undefined' && !/localhost|127\.0\.0\.1/.test(window.location.hostname);
 
+export const fixRenderUrlTypo = (url = '') => {
+  if (!url || typeof url !== 'string') return url;
+  return url.replace(/shivam-traders-10j7/gi, 'shivam-traders-l0j7');
+};
+
 export const getServerBase = () => {
   const api = import.meta.env.VITE_API_URL || '';
-  if (api.startsWith('http')) return api.replace(/\/api\/?$/, '');
+  if (api.startsWith('http')) {
+    return fixRenderUrlTypo(api.replace(/\/api\/?$/, ''));
+  }
   if (typeof window !== 'undefined') return window.location.origin;
   return 'http://localhost:5002';
 };
@@ -57,6 +64,7 @@ export const isRenderUploadUrl = (url) =>
 
 export const resolveMediaUrl = (url) => {
   if (!url) return '';
+  url = fixRenderUrlTypo(url);
   if (url.startsWith('/uploads/')) {
     return `${getServerBase()}${url}`;
   }

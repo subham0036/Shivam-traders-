@@ -1,9 +1,10 @@
-const getServerBase = () => (process.env.SERVER_URL || '').replace(/\/$/, '');
+import { getServerBaseUrl, fixRenderUrlTypo } from './serverUrl.js';
 
 export const normalizeMediaUrl = (url) => {
   if (!url || typeof url !== 'string') return url;
 
-  const serverBase = getServerBase();
+  const serverBase = getServerBaseUrl();
+  url = fixRenderUrlTypo(url);
 
   if (url.startsWith('/uploads/')) {
     return serverBase ? `${serverBase}${url}` : url;
